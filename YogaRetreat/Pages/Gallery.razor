@@ -1,0 +1,120 @@
+@page "/gallery"
+@inject IContentfulService ContentfulService
+@inject IDialogService DialogService
+
+<PageTitle>Galerija</PageTitle>
+
+<div style="padding-top:64px;">
+    <MudContainer MaxWidth="MaxWidth.Large" Style="padding:3rem 1rem;">
+        <MudText Typo="Typo.h3" Style="margin-bottom:0.5rem;">Galerija</MudText>
+        <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:2.5rem;">
+            Trenuci sa naših retreata
+        </MudText>
+
+        @if (_isLoading)
+        {
+            <div class="masonry-grid">
+                @for (int i = 0; i < 9; i++)
+                {
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="@(i % 3 == 0 ? "260px" : "180px")" />
+                }
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+        }
+        else if (!_albums.Any())
+        {
+            <MudAlert Severity="Severity.Info">Još nema fotografija. Uskoro se vraćamo!</MudAlert>
+        }
+        else
+        {
+            @foreach (var album in _albums)
+            {
+                <GalleryGrid Album="album" MaxVisible="9" OnImageClick="OpenLightbox" />
+                <MudDivider Style="margin:2rem 0;" />
+            }
+        }
+    </MudContainer>
+</div>
+
+@if (_lightboxOpen && _lightboxAlbum is not null)
+{
+    <MudDialog @bind-IsVisible="_lightboxOpen" Options="_lightboxOptions">
+        <TitleContent>
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <MudText Typo="Typo.h6">@_lightboxAlbum.Title</MudText>
+                <MudText Typo="Typo.body2" Style="color:#9E9A94;">@(_lightboxIndex + 1) / @_lightboxAlbum.ImageUrls.Length</MudText>
+            </div>
+        </TitleContent>
+        <DialogContent>
+            <div style="position:relative; text-align:center;">
+                <img src="@_lightboxAlbum.ImageUrls[_lightboxIndex]"
+                     alt="@($"{_lightboxAlbum.Title} photo {_lightboxIndex + 1}")"
+                     style="max-width:100%; max-height:70vh; object-fit:contain;" />
+            </div>
+        </DialogContent>
+        <DialogActions>
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" OnClick="LightboxPrev" Disabled="_lightboxIndex == 0" />
+            <MudSpacer />
+            <MudButton OnClick="CloseLightbox" Color="Color.Default">Zatvori</MudButton>
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" OnClick="LightboxNext" Disabled="_lightboxIndex >= _lightboxAlbum.ImageUrls.Length - 1" />
+        </DialogActions>
+    </MudDialog>
+}
+
+@code {
+    private IReadOnlyList<IGalleryAlbum> _albums = Array.Empty<IGalleryAlbum>();
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    private bool _lightboxOpen;
+    private IGalleryAlbum? _lightboxAlbum;
+    private int _lightboxIndex;
+
+    private readonly DialogOptions _lightboxOptions = new()
+    {
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        CloseButton = true,
+        BackdropClick = true
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _albums = await ContentfulService.GetGalleryAlbumsAsync();
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Nije moguće učitati galeriju. Pokušajte ponovo.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private void OpenLightbox((IGalleryAlbum album, int index) args)
+    {
+        _lightboxAlbum = args.album;
+        _lightboxIndex = args.index;
+        _lightboxOpen = true;
+    }
+
+    private void CloseLightbox() => _lightboxOpen = false;
+
+    private void LightboxPrev()
+    {
+        if (_lightboxIndex > 0) _lightboxIndex--;
+    }
+
+    private void LightboxNext()
+    {
+        if (_lightboxAlbum is not null && _lightboxIndex < _lightboxAlbum.ImageUrls.Length - 1)
+            _lightboxIndex++;
+    }
+}

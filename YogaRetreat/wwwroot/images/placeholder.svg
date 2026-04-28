@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#E8E4DE"/>
+  <text x="400" y="255" font-family="Georgia, serif" font-size="22" fill="#9E9A94" text-anchor="middle" dominant-baseline="middle">Image not available</text>
+  <circle cx="400" cy="210" r="40" fill="none" stroke="#9E9A94" stroke-width="2"/>
+  <line x1="370" y1="210" x2="430" y2="210" stroke="#9E9A94" stroke-width="2"/>
+  <line x1="400" y1="180" x2="400" y2="240" stroke="#9E9A94" stroke-width="2"/>
+</svg>

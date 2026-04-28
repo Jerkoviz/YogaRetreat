@@ -1,0 +1,92 @@
+@namespace YogaRetreat.Shared
+@implements IDisposable
+
+@if (_started)
+{
+    <MudPaper Elevation="0" Style="background:transparent; text-align:center; padding:1.5rem 0;">
+        <MudText Typo="Typo.body2" Style="color:#5A5A5A; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.1em;">
+            @(Label ?? "Retreat je počeo")
+        </MudText>
+        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+            Ovaj retreat je već počeo. Vidimo se na sledećem!
+        </MudAlert>
+    </MudPaper>
+}
+else
+{
+    <MudPaper Elevation="0" Style="background:transparent; text-align:center; padding:1.5rem 0;">
+        <MudText Typo="Typo.body2" Style="color:#5A5A5A; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.1em;">
+            @(Label ?? "Retreat počinje za")
+        </MudText>
+        <div style="display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;">
+            <div class="countdown-block">
+                <span class="countdown-digit" style="color:#6B8C6B;">@_days.ToString("D2")</span>
+                <span class="countdown-label">Dana</span>
+            </div>
+            <div class="countdown-block">
+                <span class="countdown-digit" style="color:#6B8C6B;">@_hours.ToString("D2")</span>
+                <span class="countdown-label">Sati</span>
+            </div>
+            <div class="countdown-block">
+                <span class="countdown-digit" style="color:#6B8C6B;">@_minutes.ToString("D2")</span>
+                <span class="countdown-label">Min</span>
+            </div>
+            <div class="countdown-block">
+                <span class="countdown-digit" style="color:#C4785A;">@_seconds.ToString("D2")</span>
+                <span class="countdown-label">Sek</span>
+            </div>
+        </div>
+    </MudPaper>
+}
+
+@code {
+    [Parameter, EditorRequired] public DateTime TargetDate { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public EventCallback OnExpired { get; set; }
+
+    private Timer? _timer;
+    private bool _disposed;
+    private bool _started;
+    private int _days, _hours, _minutes, _seconds;
+
+    protected override Task OnInitializedAsync()
+    {
+        _timer = new Timer(_ => InvokeAsync(Tick), null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+        return Tick();
+    }
+
+    private async Task Tick()
+    {
+        if (_disposed) return;
+
+        var remaining = TargetDate.ToUniversalTime() - DateTime.UtcNow;
+
+        if (remaining <= TimeSpan.Zero)
+        {
+            _started = true;
+            _days = _hours = _minutes = _seconds = 0;
+            _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+            if (!_disposed)
+            {
+                StateHasChanged();
+                if (OnExpired.HasDelegate)
+                    await OnExpired.InvokeAsync();
+            }
+            return;
+        }
+
+        _days = (int)remaining.TotalDays;
+        _hours = remaining.Hours;
+        _minutes = remaining.Minutes;
+        _seconds = remaining.Seconds;
+
+        if (!_disposed)
+            StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _disposed = true;
+        _timer?.Dispose();
+    }
+}

@@ -1,0 +1,65 @@
+@namespace YogaRetreat.Shared
+
+<MudCard Elevation="2" Style="@(_dimmed ? "opacity:0.6;" : "")" Class="@(Compact ? "event-card-compact" : "event-card")">
+    @if (!string.IsNullOrEmpty(Event.HeroImageUrl))
+    {
+        <MudCardMedia Image="@Event.HeroImageUrl" Height="@(Compact ? 140 : 220)" />
+    }
+    else
+    {
+        <MudCardMedia Image="/images/placeholder.svg" Height="@(Compact ? 140 : 220)" />
+    }
+    <MudCardContent>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem; flex-wrap:wrap;">
+            <MudText Typo="Typo.h6" Style="font-weight:600; line-height:1.3; flex:1;">@Event.Title</MudText>
+            @if (Event.SpotsRemaining.HasValue)
+            {
+                <MudChip T="string"
+                         Color="@(Event.SpotsRemaining <= 3 ? Color.Error : Color.Success)"
+                         Size="Size.Small"
+                         Style="font-size:0.75rem;">
+                    @(Event.SpotsRemaining == 0 ? "Popunjeno" : $"{Event.SpotsRemaining} mesta")
+                </MudChip>
+            }
+        </div>
+
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-top:0.5rem; color:#5A5A5A;">
+            <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" />
+            <MudText Typo="Typo.body2">@Event.Location</MudText>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:0.4rem; margin-top:0.25rem; color:#5A5A5A;">
+            <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Size="Size.Small" />
+            <MudText Typo="Typo.body2">@Event.StartDate.ToString("MMM d") – @Event.EndDate.ToString("MMM d, yyyy")</MudText>
+        </div>
+
+        @if (!Compact)
+        {
+            <MudText Typo="Typo.body2" Style="margin-top:0.75rem; color:#5A5A5A; line-height:1.6;">
+                @Event.ShortDescription
+            </MudText>
+        }
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem;">
+            <MudText Typo="Typo.h6" Color="Color.Secondary" Style="font-weight:600;">
+                &euro;@Event.PriceEur.ToString("N0")
+            </MudText>
+        </div>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Primary"
+                   Href="@($"/events/{Event.Slug}")"
+                   FullWidth="true">
+            Saznaj više
+        </MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter, EditorRequired] public IRetreatEvent Event { get; set; } = default!;
+    [Parameter] public bool Compact { get; set; }
+    [Parameter] public EventCallback<IRetreatEvent> OnCardClick { get; set; }
+
+    private bool _dimmed => Event.EndDate < DateTime.UtcNow;
+}

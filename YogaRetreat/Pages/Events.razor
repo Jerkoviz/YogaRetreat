@@ -1,0 +1,86 @@
+@page "/events"
+@inject IContentfulService ContentfulService
+
+<PageTitle>Retreati</PageTitle>
+
+<div style="padding-top:64px;">
+    <MudContainer MaxWidth="MaxWidth.Large" Style="padding:3rem 1rem;">
+        <MudText Typo="Typo.h3" Style="margin-bottom:0.5rem;">Svi retreati</MudText>
+        <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:2.5rem;">
+            Otkrijte predstojeće i prošle retreat doživljaje
+        </MudText>
+
+        @if (_isLoading)
+        {
+            <MudGrid>
+                @for (int i = 0; i < 6; i++)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="340px" />
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+        else if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+        }
+        else if (!_events.Any())
+        {
+            <MudAlert Severity="Severity.Info">Nema retreata. Uskoro se vraćamo!</MudAlert>
+        }
+        else
+        {
+            @if (_upcomingEvents.Any())
+            {
+                <MudText Typo="Typo.h5" Style="margin-bottom:1.5rem; color:#6B8C6B;">Predstojeći retreati</MudText>
+                <MudGrid Style="margin-bottom:3rem;">
+                    @foreach (var ev in _upcomingEvents)
+                    {
+                        <MudItem xs="12" sm="6" md="4">
+                            <EventCard Event="ev" />
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+
+            @if (_pastEvents.Any())
+            {
+                <MudText Typo="Typo.h5" Style="margin-bottom:1.5rem; color:#9E9A94;">Prošli retreati</MudText>
+                <MudGrid>
+                    @foreach (var ev in _pastEvents)
+                    {
+                        <MudItem xs="12" sm="6" md="4">
+                            <EventCard Event="ev" />
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+        }
+    </MudContainer>
+</div>
+
+@code {
+    private IReadOnlyList<IRetreatEvent> _events = Array.Empty<IRetreatEvent>();
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    private IEnumerable<IRetreatEvent> _upcomingEvents => _events.Where(e => e.StartDate >= DateTime.UtcNow);
+    private IEnumerable<IRetreatEvent> _pastEvents => _events.Where(e => e.StartDate < DateTime.UtcNow);
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _events = await ContentfulService.GetAllEventsAsync();
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Nije moguće učitati retreate. Pokušajte ponovo.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}

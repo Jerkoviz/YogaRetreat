@@ -1,0 +1,144 @@
+@page "/"
+@inject IContentfulService ContentfulService
+
+<PageTitle>@(_siteConfig?.SiteName ?? "Šumoterapija")</PageTitle>
+
+@if (_isLoading)
+{
+    <div style="padding:2rem;">
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="60vh" />
+        <MudContainer MaxWidth="MaxWidth.Large" Style="margin-top:3rem;">
+            <MudGrid>
+                @for (int i = 0; i < 3; i++)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="320px" />
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudContainer>
+    </div>
+}
+else if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudContainer MaxWidth="MaxWidth.Medium" Style="padding-top:3rem;">
+        <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+    </MudContainer>
+}
+else
+{
+    <HeroSection ImageUrl="@(_siteConfig?.HeroFallbackImageUrl ?? "/images/terasa.jpg")"
+                 VideoUrl="@_siteConfig?.HeroVideoUrl"
+                 Headline="@(_siteConfig?.SiteName ?? "Šumoterapija")"
+                 Subheadline="@(_siteConfig?.Tagline ?? "Pronađi mir. Transformiši svoju praksu.")"
+                 CtaText="Istražite retreate"
+                 CtaHref="/events"
+                 FullHeight="true" />
+
+    <MudContainer MaxWidth="MaxWidth.Medium" Style="padding:4rem 1rem 3rem;">
+        <MudText Typo="Typo.h4" Align="Align.Center" Style="margin-bottom:2rem; font-weight:600;">Plan puta</MudText>
+        <MudTimeline TimelineAlign="TimelineAlign.Start">
+            <MudTimelineItem Color="Color.Primary" Size="Size.Small">
+                <ItemContent>
+                    <MudText Typo="Typo.subtitle1" Style="font-weight:600;">09:00h – Sastanak i ulazak u šumu</MudText>
+                    <MudText Typo="Typo.body2" Style="color:#5A5A5A;">Sastanak na dogovorenoj lokaciji (parking). Lagani 10-minutni ulazak u šumu do naše baze – autentične fruškogorske vikendice.</MudText>
+                </ItemContent>
+            </MudTimelineItem>
+            <MudTimelineItem Color="Color.Primary" Size="Size.Small">
+                <ItemContent>
+                    <MudText Typo="Typo.subtitle1" Style="font-weight:600;">09:30h – Jutarnje osveženje</MudText>
+                    <MudText Typo="Typo.body2" Style="color:#5A5A5A;">Domaća limunada sa đumbirom i upoznavanje u debeloj hladovini.</MudText>
+                </ItemContent>
+            </MudTimelineItem>
+            <MudTimelineItem Color="Color.Secondary" Size="Size.Small">
+                <ItemContent>
+                    <MudText Typo="Typo.subtitle1" Style="font-weight:600;">10:00h – 12:00h – Hatha Yoga &amp; Pranayama</MudText>
+                    <MudText Typo="Typo.body2" Style="color:#5A5A5A;">Dvočasovna sesija fokusirana na detoksikaciju tela i duboko disanje. Prilagođeno svima, bez obzira na nivo iskustva.</MudText>
+                </ItemContent>
+            </MudTimelineItem>
+            <MudTimelineItem Color="Color.Primary" Size="Size.Small">
+                <ItemContent>
+                    <MudText Typo="Typo.subtitle1" Style="font-weight:600;">12:30h – Opcioni hiking (1–2h)</MudText>
+                    <MudText Typo="Typo.body2" Style="color:#5A5A5A;">Istražujemo šumske staze, punimo pluća kiseonikom i uživamo u miru nacionalnog parka.</MudText>
+                </ItemContent>
+            </MudTimelineItem>
+            <MudTimelineItem Color="Color.Secondary" Size="Size.Small">
+                <ItemContent>
+                    <MudText Typo="Typo.subtitle1" Style="font-weight:600;">14:30h – Zajednički vegetarijanski ručak</MudText>
+                    <MudText Typo="Typo.body2" Style="color:#5A5A5A;">Šareni, hranljivi obrok spremljen od lokalnih namirnica koji će te nahraniti, a ne uspavati.</MudText>
+                </ItemContent>
+            </MudTimelineItem>
+            <MudTimelineItem Color="Color.Primary" Size="Size.Small">
+                <ItemContent>
+                    <MudText Typo="Typo.subtitle1" Style="font-weight:600;">15:30h – 17:00h – Vreme za tebe</MudText>
+                    <MudText Typo="Typo.body2" Style="color:#5A5A5A;">Čitanje knjige, dremka u ležaljci, ili jednostavno uživanje u tišini šume uz biljni čaj.</MudText>
+                </ItemContent>
+            </MudTimelineItem>
+            <MudTimelineItem Color="Color.Secondary" Size="Size.Small">
+                <ItemContent>
+                    <MudText Typo="Typo.subtitle1" Style="font-weight:600;">17:00h – Povratak kući</MudText>
+                    <MudText Typo="Typo.body2" Style="color:#5A5A5A;">Lagani povratak ka kolima i polazak kući sa potpuno novom energijom.</MudText>
+                </ItemContent>
+            </MudTimelineItem>
+        </MudTimeline>
+    </MudContainer>
+
+    @if (_featuredEvents.Any())
+    {
+        <MudContainer MaxWidth="MaxWidth.Large" Style="padding:2rem 1rem 3rem;">
+            <MudText Typo="Typo.h3" Align="Align.Center" Style="margin-bottom:0.5rem;">Izdvojeni retreati</MudText>
+            <MudText Typo="Typo.body1" Align="Align.Center" Style="color:#5A5A5A; margin-bottom:3rem;">
+                Pažljivo odabrana transformativna iskustva za sve nivoe
+            </MudText>
+            <MudGrid Justify="Justify.Center">
+                @foreach (var ev in _featuredEvents.Take(3))
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <EventCard Event="ev" />
+                    </MudItem>
+                }
+            </MudGrid>
+            <div style="text-align:center; margin-top:2.5rem;">
+                <MudButton Href="/events" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large">
+                    Pogledajte sve retreate
+                </MudButton>
+            </div>
+        </MudContainer>
+    }
+
+    @if (_testimonials.Any())
+    {
+        <MudContainer MaxWidth="MaxWidth.Large" Style="padding:2rem 1rem 4rem;">
+            <TestimonialSlider Testimonials="_testimonials" />
+        </MudContainer>
+    }
+}
+
+@code {
+    [CascadingParameter] private ISiteConfig? _siteConfig { get; set; }
+
+    private IReadOnlyList<IRetreatEvent> _featuredEvents = Array.Empty<IRetreatEvent>();
+    private IReadOnlyList<ITestimonial> _testimonials = Array.Empty<ITestimonial>();
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var eventsTask = ContentfulService.GetFeaturedEventsAsync();
+            var testimonialsTask = ContentfulService.GetTestimonialsAsync();
+            await Task.WhenAll(eventsTask, testimonialsTask);
+            _featuredEvents = eventsTask.Result;
+            _testimonials = testimonialsTask.Result;
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Nije moguće učitati sadržaj. Pokušajte ponovo.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}

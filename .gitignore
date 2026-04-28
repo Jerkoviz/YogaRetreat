@@ -1,0 +1,33 @@
+# .NET build output
+bin/
+obj/
+publish/
+
+# VS / Rider
+.vs/
+.idea/
+*.user
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+*.snupkg
+project.lock.json
+packages/
+
+# Blazor WASM dev certs
+*.pfx
+
+# Contentful secrets — keep appsettings.json structure but not real keys
+# Real keys go in Cloudflare Pages env vars
+# appsettings.Development.json may contain local test keys
+YogaRetreat/wwwroot/appsettings.Development.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code (keep launch/tasks, ignore local overrides)
+.vscode/*.log

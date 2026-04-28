@@ -1,0 +1,47 @@
+@inject NavigationManager Nav
+
+<MudAppBar Elevation="1" Color="Color.Primary" Fixed="true">
+    <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                   Color="Color.Inherit"
+                   Edge="Edge.Start"
+                   OnClick="ToggleDrawer"
+                   Class="d-flex d-md-none" />
+
+    <MudLink Href="/" Class="d-flex align-center" Style="text-decoration:none; gap:0.5rem; color:white;">
+        @if (!string.IsNullOrEmpty(SiteConfig?.LogoUrl))
+        {
+            <img src="@SiteConfig.LogoUrl" alt="@(SiteConfig?.SiteName ?? "Yoga Retreat")" style="height:36px;" />
+        }
+        <MudText Typo="Typo.h6" Style="color:white; font-weight:600;">
+            @(SiteConfig?.SiteName ?? "Šumoterapija")
+        </MudText>
+    </MudLink>
+
+    <MudSpacer />
+
+    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
+        <MudButton Href="/" Color="Color.Inherit" Variant="Variant.Text">Početna</MudButton>
+        <MudButton Href="/events" Color="Color.Inherit" Variant="Variant.Text">Retreati</MudButton>
+        <MudButton Href="/gallery" Color="Color.Inherit" Variant="Variant.Text">Galerija</MudButton>
+    </MudHidden>
+</MudAppBar>
+
+<MudDrawer @bind-Open="_drawerOpen" Elevation="2" Variant="DrawerVariant.Temporary">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6">Meni</MudText>
+    </MudDrawerHeader>
+    <MudNavMenu>
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home" OnClick="CloseDrawer">Početna</MudNavLink>
+        <MudNavLink Href="/events" Icon="@Icons.Material.Filled.Event" OnClick="CloseDrawer">Retreati</MudNavLink>
+        <MudNavLink Href="/gallery" Icon="@Icons.Material.Filled.PhotoLibrary" OnClick="CloseDrawer">Galerija</MudNavLink>
+    </MudNavMenu>
+</MudDrawer>
+
+@code {
+    [Parameter] public ISiteConfig? SiteConfig { get; set; }
+
+    private bool _drawerOpen;
+
+    private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
+    private void CloseDrawer() => _drawerOpen = false;
+}

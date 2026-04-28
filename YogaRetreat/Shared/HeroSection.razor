@@ -1,0 +1,44 @@
+@namespace YogaRetreat.Shared
+
+<div class="hero-section @(FullHeight ? "full-height" : "")">
+    <div class="hero-bg" style="background-image: url('@ImageUrl');">
+        @if (!string.IsNullOrEmpty(VideoUrl))
+        {
+            <video autoplay muted loop playsinline poster="@ImageUrl">
+                <source src="@VideoUrl" />
+            </video>
+        }
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <MudText Typo="Typo.h1" Style="color:white; margin-bottom:1rem; text-shadow:0 2px 8px rgba(0,0,0,0.4);">
+            @Headline
+        </MudText>
+        @if (!string.IsNullOrEmpty(Subheadline))
+        {
+            <MudText Typo="Typo.h5" Style="color:rgba(255,255,255,0.9); margin-bottom:2rem; font-weight:400; text-shadow:0 1px 4px rgba(0,0,0,0.3);">
+                @Subheadline
+            </MudText>
+        }
+        @if (!string.IsNullOrEmpty(CtaText) && !string.IsNullOrEmpty(CtaHref))
+        {
+            <MudButton Href="@CtaHref"
+                       Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       Size="Size.Large"
+                       Style="padding:0.75rem 2.5rem; font-size:1.1rem; letter-spacing:0.05em;">
+                @CtaText
+            </MudButton>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string ImageUrl { get; set; } = string.Empty;
+    [Parameter] public string? VideoUrl { get; set; }
+    [Parameter, EditorRequired] public string Headline { get; set; } = string.Empty;
+    [Parameter] public string? Subheadline { get; set; }
+    [Parameter] public string? CtaText { get; set; }
+    [Parameter] public string? CtaHref { get; set; }
+    [Parameter] public bool FullHeight { get; set; } = true;
+}

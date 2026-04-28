@@ -1,0 +1,72 @@
+@namespace YogaRetreat.Shared
+
+<MudPaper Elevation="0" Style="background:#2D2D2D; color:#F8F5F0; margin-top:4rem; padding:3rem 1rem 1.5rem;">
+    <MudContainer MaxWidth="MaxWidth.Large">
+        <MudGrid>
+            <MudItem xs="12" sm="4">
+                <MudText Typo="Typo.h6" Style="color:#F8F5F0; margin-bottom:0.75rem;">
+                    @(SiteConfig?.SiteName ?? "Šumoterapija")
+                </MudText>
+                <MudText Typo="Typo.body2" Style="color:#B0ADA8; line-height:1.7;">
+                    @(SiteConfig?.Tagline ?? "Pronađi mir. Transformiši svoju praksu.")
+                </MudText>
+                @if (!string.IsNullOrEmpty(SiteConfig?.ContactEmail))
+                {
+                    <MudLink Href="@($"mailto:{SiteConfig.ContactEmail}")"
+                             Style="color:#C4785A; display:block; margin-top:0.75rem; font-size:0.9rem;">
+                        @SiteConfig.ContactEmail
+                    </MudLink>
+                }
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudText Typo="Typo.subtitle2" Style="color:#F8F5F0; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; font-size:0.8rem;">
+                    Istraži
+                </MudText>
+                <div style="display:flex; flex-direction:column; gap:0.4rem;">
+                    <MudLink Href="/" Style="color:#B0ADA8;">Početna</MudLink>
+                    <MudLink Href="/events" Style="color:#B0ADA8;">Retreati</MudLink>
+                    <MudLink Href="/gallery" Style="color:#B0ADA8;">Galerija</MudLink>
+                </div>
+            </MudItem>
+
+            <MudItem xs="12" sm="4">
+                <MudText Typo="Typo.subtitle2" Style="color:#F8F5F0; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; font-size:0.8rem;">
+                    Pratite nas
+                </MudText>
+                <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                    @if (!string.IsNullOrEmpty(SiteConfig?.InstagramUrl))
+                    {
+                        <MudIconButton Icon="@Icons.Custom.Brands.Instagram"
+                                       Href="@SiteConfig.InstagramUrl"
+                                       Target="_blank"
+                                       Style="color:#B0ADA8;" />
+                    }
+                    @if (!string.IsNullOrEmpty(SiteConfig?.FacebookUrl))
+                    {
+                        <MudIconButton Icon="@Icons.Custom.Brands.Facebook"
+                                       Href="@SiteConfig.FacebookUrl"
+                                       Target="_blank"
+                                       Style="color:#B0ADA8;" />
+                    }
+                    @if (!string.IsNullOrEmpty(SiteConfig?.YouTubeUrl))
+                    {
+                        <MudIconButton Icon="@Icons.Custom.Brands.YouTube"
+                                       Href="@SiteConfig.YouTubeUrl"
+                                       Target="_blank"
+                                       Style="color:#B0ADA8;" />
+                    }
+                </div>
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Style="background:#444; margin:2rem 0 1rem;" />
+        <MudText Typo="Typo.caption" Style="color:#6B6866; text-align:center; display:block;">
+            &copy; @DateTime.Now.Year @(SiteConfig?.SiteName ?? "Šumoterapija"). Sva prava zadržana.
+        </MudText>
+    </MudContainer>
+</MudPaper>
+
+@code {
+    [Parameter] public ISiteConfig? SiteConfig { get; set; }
+}

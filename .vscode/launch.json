@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch YogaRetreat (Blazor WASM)",
+      "type": "blazorwasm",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/YogaRetreat",
+      "url": "https://localhost:5001",
+      "browser": "chrome"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+@inherits LayoutComponentBase
+@inject IContentfulService ContentfulService
+
+<MudThemeProvider Theme="_theme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<CascadingValue Value="_siteConfig">
+    <MudLayout>
+        <NavMenu SiteConfig="_siteConfig" />
+
+        <MudMainContent>
+            @Body
+            <Footer SiteConfig="_siteConfig" />
+        </MudMainContent>
+    </MudLayout>
+</CascadingValue>
+
+@code {
+    private readonly MudTheme _theme = YogaRetreat.Theme.YogaTheme.Create();
+    private ISiteConfig? _siteConfig;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _siteConfig = await ContentfulService.GetSiteConfigAsync();
+        }
+        catch
+        {
+            // siteConfig stays null — components handle null gracefully
+        }
+    }
+}

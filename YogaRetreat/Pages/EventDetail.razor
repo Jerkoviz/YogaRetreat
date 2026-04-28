@@ -1,0 +1,128 @@
+@page "/events/{Slug}"
+@inject IContentfulService ContentfulService
+@inject NavigationManager Nav
+
+<PageTitle>@(_event?.Title ?? "Detalji retreata")</PageTitle>
+
+@if (_isLoading)
+{
+    <div style="padding-top:64px;">
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="50vh" />
+        <MudContainer MaxWidth="MaxWidth.Large" Style="padding:2rem 1rem;">
+            <MudGrid>
+                <MudItem xs="12" md="8">
+                    <MudSkeleton Height="40px" Style="margin-bottom:1rem;" />
+                    <MudSkeleton Height="200px" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudSkeleton Height="200px" />
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </div>
+}
+else if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudContainer MaxWidth="MaxWidth.Medium" Style="padding:4rem 1rem;">
+        <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+        <div style="margin-top:1rem;">
+            <MudButton Href="/events" Variant="Variant.Outlined" Color="Color.Primary">Nazad na retreate</MudButton>
+        </div>
+    </MudContainer>
+}
+else if (_event is not null)
+{
+    <div style="padding-top:64px;">
+        <HeroSection ImageUrl="@(_event.HeroImageUrl.Length > 0 ? _event.HeroImageUrl : "/images/placeholder.svg")"
+                     Headline="@_event.Title"
+                     Subheadline="@_event.Location"
+                     FullHeight="false" />
+
+        <MudContainer MaxWidth="MaxWidth.Large" Style="padding:3rem 1rem;">
+            @if (_event.Tags.Length > 0)
+            {
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+                    @foreach (var tag in _event.Tags)
+                    {
+                        <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Outlined">@tag</MudChip>
+                    }
+                </div>
+            }
+
+            <MudGrid>
+                <MudItem xs="12" md="8">
+                    <div class="event-body" style="line-height:1.8; font-size:1.05rem;">
+                        @((MarkupString)_bodyHtml)
+                    </div>
+                </MudItem>
+
+                <MudItem xs="12" md="4">
+                    <MudPaper Elevation="2" Style="padding:1.5rem; border-radius:8px; position:sticky; top:80px;">
+                        <MudText Typo="Typo.h4" Color="Color.Secondary" Style="margin-bottom:1rem;">
+                            &euro;@_event.PriceEur.ToString("N0")
+                        </MudText>
+
+                        <div style="display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.5rem;">
+                            <div style="display:flex; gap:0.5rem; align-items:center;">
+                                <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Size="Size.Small" Color="Color.Primary" />
+                                <MudText Typo="Typo.body2">
+                                    @_event.StartDate.ToString("MMM d") – @_event.EndDate.ToString("MMM d, yyyy")
+                                </MudText>
+                            </div>
+                            <div style="display:flex; gap:0.5rem; align-items:center;">
+                                <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Color="Color.Primary" />
+                                <MudText Typo="Typo.body2">@_event.Location</MudText>
+                            </div>
+                            <div style="display:flex; gap:0.5rem; align-items:center;">
+                                <MudIcon Icon="@Icons.Material.Filled.People" Size="Size.Small" Color="Color.Primary" />
+                                <MudText Typo="Typo.body2">
+                                    @if (_event.SpotsRemaining.HasValue)
+                                    {
+                                        @($"{_event.SpotsRemaining} od {_event.CapacityMax} mesta dostupno")
+                                    }
+                                    else
+                                    {
+                                        @("Kontaktirajte nas za dostupnost")
+                                    }
+                                </MudText>
+                            </div>
+                        </div>
+
+                        <CountdownTimer TargetDate="_event.StartDate" />
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </div>
+}
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    private IRetreatEvent? _event;
+    private string _bodyHtml = string.Empty;
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _event = await ContentfulService.GetEventBySlugAsync(Slug);
+            if (_event is null)
+            {
+                Nav.NavigateTo("/events");
+                return;
+            }
+            _bodyHtml = Markdig.Markdown.ToHtml(_event.BodyMarkdown ?? string.Empty);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Nije moguće učitati detalje retreata. Pokušajte ponovo.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}

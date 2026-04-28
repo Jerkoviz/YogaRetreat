@@ -1,0 +1,24 @@
+@namespace YogaRetreat.Shared
+
+<div class="gallery-tile @(IsActive ? "active" : "")" @onclick="HandleClick">
+    <img src="@ImageUrl"
+         alt="@(AltText ?? "Gallery image")"
+         loading="lazy"
+         onerror="this.src='/images/placeholder.svg'" />
+    <div class="gallery-tile-overlay">
+        <MudIcon Icon="@Icons.Material.Filled.ZoomIn" Style="color:white; font-size:2rem;" />
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string ImageUrl { get; set; } = string.Empty;
+    [Parameter] public string? AltText { get; set; }
+    [Parameter] public bool IsActive { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private async Task HandleClick()
+    {
+        if (OnClick.HasDelegate)
+            await OnClick.InvokeAsync();
+    }
+}

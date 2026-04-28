@@ -1,0 +1,131 @@
+@namespace YogaRetreat.Shared
+@implements IDisposable
+
+@if (Testimonials.Any())
+{
+    <MudPaper Elevation="0" Style="background:#F0EDE8; padding:3rem 1.5rem; border-radius:8px; text-align:center; position:relative;">
+        <MudText Typo="Typo.h6" Style="color:#5A5A5A; margin-bottom:2rem; text-transform:uppercase; letter-spacing:0.1em; font-size:0.85rem;">
+            What Our Guests Say
+        </MudText>
+
+        @{
+            var t = Testimonials[_currentIndex];
+        }
+
+        <div style="max-width:700px; margin:0 auto;">
+            @if (!string.IsNullOrEmpty(t.AuthorPhotoUrl))
+            {
+                <MudAvatar Style="width:72px; height:72px; margin:0 auto 1rem; border:3px solid #6B8C6B;">
+                    <MudImage Src="@t.AuthorPhotoUrl" Alt="@t.AuthorName" />
+                </MudAvatar>
+            }
+            else
+            {
+                <MudAvatar Style="width:72px; height:72px; margin:0 auto 1rem; background:#6B8C6B; color:white; font-size:1.5rem;">
+                    @(t.AuthorName.Length > 0 ? t.AuthorName[0].ToString() : "?")
+                </MudAvatar>
+            }
+
+            <MudText Typo="Typo.h5" Style="font-style:italic; color:#2D2D2D; margin-bottom:1.5rem; line-height:1.6;">
+                &ldquo;@t.Quote&rdquo;
+            </MudText>
+
+            @if (ShowRating)
+            {
+                <MudRating ReadOnly="true" SelectedValue="t.Rating" Color="Color.Warning" Style="justify-content:center; margin-bottom:0.75rem;" />
+            }
+
+            <MudText Typo="Typo.subtitle2" Style="color:#6B8C6B; font-weight:600;">
+                @t.AuthorName
+            </MudText>
+            @if (!string.IsNullOrEmpty(t.RetreatTitle))
+            {
+                <MudText Typo="Typo.body2" Style="color:#9E9A94;">@t.RetreatTitle</MudText>
+            }
+        </div>
+
+        <div style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-top:2rem;">
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft"
+                           OnClick="Prev"
+                           Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           Size="Size.Small" />
+
+            <div style="display:flex; gap:0.4rem;">
+                @for (int i = 0; i < Testimonials.Count; i++)
+                {
+                    var idx = i;
+                    <div @onclick="() => GoTo(idx)"
+                         style="width:10px; height:10px; border-radius:50%; cursor:pointer; background:@(i == _currentIndex ? "#6B8C6B" : "#C8C4BE"); transition:background 0.2s;">
+                    </div>
+                }
+            </div>
+
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronRight"
+                           OnClick="Next"
+                           Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           Size="Size.Small" />
+        </div>
+    </MudPaper>
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<ITestimonial> Testimonials { get; set; } = Array.Empty<ITestimonial>();
+    [Parameter] public int AutoPlayIntervalMs { get; set; } = 5000;
+    [Parameter] public bool ShowRating { get; set; } = true;
+
+    private int _currentIndex;
+    private Timer? _timer;
+    private bool _disposed;
+
+    protected override void OnParametersSet()
+    {
+        if (Testimonials.Any() && AutoPlayIntervalMs > 0)
+        {
+            _timer?.Dispose();
+            _timer = new Timer(_ => InvokeAsync(AutoAdvance), null,
+                TimeSpan.FromMilliseconds(AutoPlayIntervalMs),
+                TimeSpan.FromMilliseconds(AutoPlayIntervalMs));
+        }
+    }
+
+    private async Task AutoAdvance()
+    {
+        if (_disposed || !Testimonials.Any()) return;
+        _currentIndex = (_currentIndex + 1) % Testimonials.Count;
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    private void Next()
+    {
+        if (!Testimonials.Any()) return;
+        _currentIndex = (_currentIndex + 1) % Testimonials.Count;
+        ResetTimer();
+    }
+
+    private void Prev()
+    {
+        if (!Testimonials.Any()) return;
+        _currentIndex = (_currentIndex - 1 + Testimonials.Count) % Testimonials.Count;
+        ResetTimer();
+    }
+
+    private void GoTo(int idx)
+    {
+        _currentIndex = idx;
+        ResetTimer();
+    }
+
+    private void ResetTimer()
+    {
+        _timer?.Change(TimeSpan.FromMilliseconds(AutoPlayIntervalMs), TimeSpan.FromMilliseconds(AutoPlayIntervalMs));
+    }
+
+    public void Dispose()
+    {
+        _disposed = true;
+        _timer?.Dispose();
+    }
+}

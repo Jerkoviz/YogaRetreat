@@ -1,0 +1,50 @@
+@namespace YogaRetreat.Shared
+
+<div style="margin-bottom:2rem;">
+    <MudText Typo="Typo.h5" Style="margin-bottom:0.5rem;">@Album.Title</MudText>
+    @if (!string.IsNullOrEmpty(Album.Description))
+    {
+        <MudText Typo="Typo.body2" Style="color:#5A5A5A; margin-bottom:1rem;">@Album.Description</MudText>
+    }
+
+    <div class="masonry-grid">
+        @foreach (var (url, index) in _visibleImages)
+        {
+            <GalleryImage ImageUrl="@url"
+                          AltText="@($"{Album.Title} photo {index + 1}")"
+                          OnClick="@(() => HandleImageClick(index))" />
+        }
+    </div>
+
+    @if (MaxVisible.HasValue && Album.ImageUrls.Length > MaxVisible.Value && !_showAll)
+    {
+        <div style="text-align:center; margin-top:1rem;">
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Primary"
+                       OnClick="ShowAll">
+                Show all @Album.ImageUrls.Length photos
+            </MudButton>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IGalleryAlbum Album { get; set; } = default!;
+    [Parameter] public int? MaxVisible { get; set; }
+    [Parameter] public EventCallback<(IGalleryAlbum, int)> OnImageClick { get; set; }
+
+    private bool _showAll;
+
+    private IEnumerable<(string url, int index)> _visibleImages =>
+        Album.ImageUrls
+            .Select((url, i) => (url, i))
+            .Take(_showAll || !MaxVisible.HasValue ? int.MaxValue : MaxVisible.Value);
+
+    private async Task HandleImageClick(int index)
+    {
+        if (OnImageClick.HasDelegate)
+            await OnImageClick.InvokeAsync((Album, index));
+    }
+
+    private void ShowAll() => _showAll = true;
+}
