@@ -1,0 +1,60 @@
+@page "/about-us"
+
+<PageTitle>O nama – Šumoterapija</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Style="padding-top:80px; padding-bottom:4rem;">
+
+    <MudText Typo="Typo.h3" Align="Align.Center" Style="margin-bottom:0.5rem; font-weight:600;">O nama</MudText>
+    <MudText Typo="Typo.body1" Align="Align.Center" Style="color:#5A5A5A; margin-bottom:3rem;">
+        Upoznajte ljude iza Šumoterapije
+    </MudText>
+
+    @foreach (var person in _team)
+    {
+        <MudCard Elevation="0" Style="margin-bottom:2.5rem; border-bottom:1px solid #e0e0e0; padding-bottom:2.5rem;">
+            <MudCardContent>
+                <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:1rem;">
+                    <MudAvatar Style="width:120px; height:120px; font-size:2.5rem; background-color:#6B8C6B; color:white;">
+                        @if (!string.IsNullOrEmpty(person.ImageUrl))
+                        {
+                            <MudImage Src="@person.ImageUrl" Alt="@person.Name" Style="width:100%; height:100%; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            @person.Name[0]
+                        }
+                    </MudAvatar>
+                    <div>
+                        <MudText Typo="Typo.h5" Style="font-weight:600;">@person.Name</MudText>
+                        @if (!string.IsNullOrEmpty(person.Role))
+                        {
+                            <MudText Typo="Typo.subtitle2" Style="color:#C4785A; margin-bottom:0.5rem;">@person.Role</MudText>
+                        }
+                        <MudText Typo="Typo.body1" Style="color:#5A5A5A; max-width:480px; margin:0 auto;">@person.Bio</MudText>
+                    </div>
+                </div>
+            </MudCardContent>
+        </MudCard>
+    }
+
+</MudContainer>
+
+@code {
+    private record TeamMember(string Name, string? Role, string Bio, string? ImageUrl);
+
+    private readonly TeamMember[] _team =
+    [
+        new("Jovana", null,
+            "Placeholder biografija za Jovanu. Ovde dodajte kratki opis – ko ste, šta vas inspiriše i zašto ste deo Šumoterapije.",
+            null),
+        new("Sofija", "Instruktor joge",
+            "Placeholder biografija za Sofiju. Ovde dodajte kratki opis – vaše iskustvo, stil joge i šta donosite na prostirku.",
+            null),
+        new("Željko", null,
+            "Placeholder biografija za Željka. Ovde dodajte kratki opis – ko ste, šta vas inspiriše i zašto ste deo Šumoterapije.",
+            null),
+        new("Bojan", null,
+            "Placeholder biografija za Bojana. Ovde dodajte kratki opis – ko ste, šta vas inspiriše i zašto ste deo Šumoterapije.",
+            null),
+    ];
+}

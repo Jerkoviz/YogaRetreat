@@ -35,13 +35,10 @@
                     Pratite nas
                 </MudText>
                 <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-                    @if (!string.IsNullOrEmpty(SiteConfig?.InstagramUrl))
-                    {
-                        <MudIconButton Icon="@Icons.Custom.Brands.Instagram"
-                                       Href="@SiteConfig.InstagramUrl"
-                                       Target="_blank"
-                                       Style="color:#B0ADA8;" />
-                    }
+                    <MudIconButton Icon="@Icons.Custom.Brands.Instagram"
+                                   Href="@(SiteConfig?.InstagramUrl ?? "https://www.instagram.com/ravnotezim_yogastudio?igsh=amVreG1vaHB6Nmhx")"
+                                   Target="_blank"
+                                   Style="color:#B0ADA8;" />
                     @if (!string.IsNullOrEmpty(SiteConfig?.FacebookUrl))
                     {
                         <MudIconButton Icon="@Icons.Custom.Brands.Facebook"
