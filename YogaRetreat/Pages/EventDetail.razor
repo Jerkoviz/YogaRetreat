@@ -1,8 +1,9 @@
 @page "/events/{Slug}"
 @inject IContentfulService ContentfulService
 @inject NavigationManager Nav
+@inject LanguageService Lang
 
-<PageTitle>@(_event?.Title ?? "Detalji retreata")</PageTitle>
+<PageTitle>@(_event?.Title ?? Lang.T("Detalji retreata", "Retreat Details"))</PageTitle>
 
 @if (_isLoading)
 {
@@ -26,7 +27,7 @@ else if (!string.IsNullOrEmpty(_errorMessage))
     <MudContainer MaxWidth="MaxWidth.Medium" Style="padding:4rem 1rem;">
         <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
         <div style="margin-top:1rem;">
-            <MudButton Href="/events" Variant="Variant.Outlined" Color="Color.Primary">Nazad na retreate</MudButton>
+            <MudButton Href="/events" Variant="Variant.Outlined" Color="Color.Primary">@Lang.T("Nazad na retreate", "Back to retreats")</MudButton>
         </div>
     </MudContainer>
 }
@@ -78,11 +79,12 @@ else if (_event is not null)
                                 <MudText Typo="Typo.body2">
                                     @if (_event.SpotsRemaining.HasValue)
                                     {
-                                        @($"{_event.SpotsRemaining} od {_event.CapacityMax} mesta dostupno")
+                                        @Lang.T($"{_event.SpotsRemaining} od {_event.CapacityMax} mesta dostupno",
+                                                $"{_event.SpotsRemaining} of {_event.CapacityMax} spots available")
                                     }
                                     else
                                     {
-                                        @("Kontaktirajte nas za dostupnost")
+                                        @Lang.T("Kontaktirajte nas za dostupnost", "Contact us for availability")
                                     }
                                 </MudText>
                             </div>
@@ -118,7 +120,7 @@ else if (_event is not null)
         }
         catch (Exception)
         {
-            _errorMessage = "Nije moguće učitati detalje retreata. Pokušajte ponovo.";
+            _errorMessage = Lang.T("Nije moguće učitati detalje retreata. Pokušajte ponovo.", "Unable to load retreat details. Please try again.");
         }
         finally
         {

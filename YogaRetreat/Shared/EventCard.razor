@@ -1,4 +1,5 @@
 @namespace YogaRetreat.Shared
+@inject LanguageService Lang
 
 <MudCard Elevation="2" Style="@(_dimmed ? "opacity:0.6;" : "")" Class="@(Compact ? "event-card-compact" : "event-card")">
     @if (!string.IsNullOrEmpty(Event.HeroImageUrl))
@@ -18,7 +19,9 @@
                          Color="@(Event.SpotsRemaining <= 3 ? Color.Error : Color.Success)"
                          Size="Size.Small"
                          Style="font-size:0.75rem;">
-                    @(Event.SpotsRemaining == 0 ? "Popunjeno" : $"{Event.SpotsRemaining} mesta")
+                    @(Event.SpotsRemaining == 0
+                        ? Lang.T("Popunjeno", "Full")
+                        : Lang.T($"{Event.SpotsRemaining} mesta", $"{Event.SpotsRemaining} spots"))
                 </MudChip>
             }
         </div>
@@ -51,7 +54,7 @@
                    Color="Color.Primary"
                    Href="@($"/events/{Event.Slug}")"
                    FullWidth="true">
-            Saznaj više
+            @Lang.T("Saznaj više", "Learn more")
         </MudButton>
     </MudCardActions>
 </MudCard>

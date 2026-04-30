@@ -5,7 +5,7 @@
       "name": "Launch YogaRetreat (Blazor WASM)",
       "type": "blazorwasm",
       "request": "launch",
-      "cwd": "d:\\Pomocni projekti\\YogaRetreat\\YogaRetreat",
+      "cwd": "C:\\Users\\zjerk\\source\\repos\\YogaRetreat",
       "url": "http://localhost:5272",
       "browser": "chrome"
     }

@@ -1,14 +1,15 @@
 @namespace YogaRetreat.Shared
 @implements IDisposable
+@inject LanguageService Lang
 
 @if (_started)
 {
     <MudPaper Elevation="0" Style="background:transparent; text-align:center; padding:1.5rem 0;">
         <MudText Typo="Typo.body2" Style="color:#5A5A5A; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.1em;">
-            @(Label ?? "Retreat je počeo")
+            @(Label ?? Lang.T("Retreat je počeo", "Retreat has started"))
         </MudText>
         <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
-            Ovaj retreat je već počeo. Vidimo se na sledećem!
+            @Lang.T("Ovaj retreat je već počeo. Vidimo se na sledećem!", "This retreat has already started. See you at the next one!")
         </MudAlert>
     </MudPaper>
 }
@@ -16,24 +17,24 @@ else
 {
     <MudPaper Elevation="0" Style="background:transparent; text-align:center; padding:1.5rem 0;">
         <MudText Typo="Typo.body2" Style="color:#5A5A5A; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.1em;">
-            @(Label ?? "Retreat počinje za")
+            @(Label ?? Lang.T("Retreat počinje za", "Retreat starts in"))
         </MudText>
         <div style="display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;">
             <div class="countdown-block">
                 <span class="countdown-digit" style="color:#6B8C6B;">@_days.ToString("D2")</span>
-                <span class="countdown-label">Dana</span>
+                <span class="countdown-label">@Lang.T("Dana", "Days")</span>
             </div>
             <div class="countdown-block">
                 <span class="countdown-digit" style="color:#6B8C6B;">@_hours.ToString("D2")</span>
-                <span class="countdown-label">Sati</span>
+                <span class="countdown-label">@Lang.T("Sati", "Hours")</span>
             </div>
             <div class="countdown-block">
                 <span class="countdown-digit" style="color:#6B8C6B;">@_minutes.ToString("D2")</span>
-                <span class="countdown-label">Min</span>
+                <span class="countdown-label">@Lang.T("Min", "Min")</span>
             </div>
             <div class="countdown-block">
                 <span class="countdown-digit" style="color:#C4785A;">@_seconds.ToString("D2")</span>
-                <span class="countdown-label">Sek</span>
+                <span class="countdown-label">@Lang.T("Sek", "Sec")</span>
             </div>
         </div>
     </MudPaper>

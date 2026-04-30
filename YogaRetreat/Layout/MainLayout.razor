@@ -1,5 +1,7 @@
 @inherits LayoutComponentBase
 @inject IContentfulService ContentfulService
+@inject LanguageService Lang
+@implements IDisposable
 
 <MudThemeProvider Theme="_theme" />
 <MudPopoverProvider />
@@ -23,6 +25,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await Lang.InitAsync();
+        Lang.OnChanged += OnLanguageChanged;
         try
         {
             _siteConfig = await ContentfulService.GetSiteConfigAsync();
@@ -32,4 +36,8 @@
             // siteConfig stays null — components handle null gracefully
         }
     }
+
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Lang.OnChanged -= OnLanguageChanged;
 }

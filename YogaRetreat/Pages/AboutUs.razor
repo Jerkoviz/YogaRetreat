@@ -1,60 +1,73 @@
 @page "/about-us"
+@inject LanguageService Lang
 
-<PageTitle>O nama – Šumoterapija</PageTitle>
+<PageTitle>@Lang.T("O nama", "About Us") – Šumozov</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Small" Style="padding-top:80px; padding-bottom:4rem;">
 
-    <MudText Typo="Typo.h3" Align="Align.Center" Style="margin-bottom:0.5rem; font-weight:600;">O nama</MudText>
+    <MudText Typo="Typo.h3" Align="Align.Center" Style="margin-bottom:0.5rem; font-weight:600;">@Lang.T("O nama", "About Us")</MudText>
     <MudText Typo="Typo.body1" Align="Align.Center" Style="color:#5A5A5A; margin-bottom:3rem;">
-        Upoznajte ljude iza Šumoterapije
+        @Lang.T("Upoznajte ljude iza Šumozova", "Meet the people behind Šumozov")
     </MudText>
 
-    @foreach (var person in _team)
-    {
-        <MudCard Elevation="0" Style="margin-bottom:2.5rem; border-bottom:1px solid #e0e0e0; padding-bottom:2.5rem;">
-            <MudCardContent>
-                <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:1rem;">
-                    <MudAvatar Style="width:120px; height:120px; font-size:2.5rem; background-color:#6B8C6B; color:white;">
-                        @if (!string.IsNullOrEmpty(person.ImageUrl))
-                        {
-                            <MudImage Src="@person.ImageUrl" Alt="@person.Name" Style="width:100%; height:100%; object-fit:cover;" />
-                        }
-                        else
-                        {
-                            @person.Name[0]
-                        }
-                    </MudAvatar>
-                    <div>
-                        <MudText Typo="Typo.h5" Style="font-weight:600;">@person.Name</MudText>
-                        @if (!string.IsNullOrEmpty(person.Role))
-                        {
-                            <MudText Typo="Typo.subtitle2" Style="color:#C4785A; margin-bottom:0.5rem;">@person.Role</MudText>
-                        }
-                        <MudText Typo="Typo.body1" Style="color:#5A5A5A; max-width:480px; margin:0 auto;">@person.Bio</MudText>
-                    </div>
-                </div>
-            </MudCardContent>
-        </MudCard>
-    }
+    <MudGrid Spacing="4">
+        @foreach (var person in _team)
+        {
+            <MudItem xs="12" sm="6">
+                <MudCard Elevation="0" Style="height:100%; border:1px solid #e0e0e0; border-radius:12px;">
+                    <MudCardContent>
+                        <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:1rem;">
+                            <MudAvatar Style="width:140px; height:140px; font-size:2.5rem; background-color:#6B8C6B; color:white; overflow:hidden;">
+                                @if (!string.IsNullOrEmpty(person.ImageUrl))
+                                {
+                                    <img src="@person.ImageUrl" alt="@person.Name" style="width:100%; height:100%; object-fit:cover;" />
+                                }
+                                else
+                                {
+                                    @person.Name[0]
+                                }
+                            </MudAvatar>
+                            <div>
+                                <MudText Typo="Typo.h5" Style="font-weight:600;">@person.Name</MudText>
+                                @{var role = Lang.T(person.RoleSr ?? "", person.RoleEn ?? "");}
+                                @if (!string.IsNullOrEmpty(role))
+                                {
+                                    <MudText Typo="Typo.subtitle2" Style="color:#C4785A; margin-bottom:0.5rem;">@role</MudText>
+                                }
+                                <MudText Typo="Typo.body1" Style="color:#5A5A5A;">@Lang.T(person.BioSr, person.BioEn)</MudText>
+                            </div>
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
 
 </MudContainer>
 
 @code {
-    private record TeamMember(string Name, string? Role, string Bio, string? ImageUrl);
+    private record TeamMember(string Name, string? RoleSr, string? RoleEn, string BioSr, string BioEn, string? ImageUrl);
 
     private readonly TeamMember[] _team =
     [
-        new("Jovana", null,
-            "Placeholder biografija za Jovanu. Ovde dodajte kratki opis – ko ste, šta vas inspiriše i zašto ste deo Šumoterapije.",
-            null),
-        new("Sofija", "Instruktor joge",
-            "Placeholder biografija za Sofiju. Ovde dodajte kratki opis – vaše iskustvo, stil joge i šta donosite na prostirku.",
-            null),
-        new("Željko", null,
-            "Placeholder biografija za Željka. Ovde dodajte kratki opis – ko ste, šta vas inspiriše i zašto ste deo Šumoterapije.",
-            null),
-        new("Bojan", null,
-            "Placeholder biografija za Bojana. Ovde dodajte kratki opis – ko ste, šta vas inspiriše i zašto ste deo Šumoterapije.",
-            null),
+        new("Jovana", null, null,
+            @"Šumski šetač na duge pruge i samoproklamovani botaničar. Kancelarijsku stolicu najradije menja ležaljkom medju borovima, sa knjigom u ruci.
+              Ali nište ne počinje dok ne popije prvu kafu uz cvrkut ptica s najlepšim pogledom na Fruškaću.",
+            "A long-distance forest hiker and self-proclaimed botanist. She'd trade her office chair for a hammock among the pines with a book in hand. But nothing starts until she has her first coffee to the sound of birdsong with the most beautiful view of Fruška Gora.",
+            "images/jovana.jpg"),
+        new("Sofija", "Instruktor joge", "Yoga Instructor",
+            @"Drži časove Aerial joge i joge Čakri u svom Ravnotežim joga studiju u Rumi. Uz to se bavi i telesnom terapijom kao sertifikovani TRE® instruktor i Fascial Maneuver Coach.
+            Na vikendici najviše voli da hoda bosa i peče palačinke na suncu.",
+            "She teaches Aerial Yoga and Chakra Yoga at her Ravnotežim yoga studio in Ruma. She is also a certified TRE® instructor and Fascial Maneuver Coach. At the retreat house, she loves walking barefoot and making pancakes in the sun.",
+            "images/sofija.jpg"),
+        new("Bojan", null, null,
+            @"Godinama pešači po Fruškaću sa svojim dobrim i poštenim psom Keli. Često planinari, pa je prošao i Osnovnu planinarsku obuku.
+              Na vikendici mnogo voli da ugošćava ljude. Osim toga, najviše uživa u sveže pokošenoj travi i dobrom pivu. Bez Keli ne ide nikuda.",
+            "For years he has hiked Fruška Gora with his good and faithful dog Keli. He often goes mountaineering and has completed basic mountaineering training. At the retreat house he loves hosting people. Most of all he enjoys freshly mowed grass and a good beer. He never goes anywhere without Keli.",
+            "images/Bojan.png"),
+        new("Željko", null, null,
+            "Aktivni planinar, muzičar i ljubitelj prirode.",
+            "Active hiker, musician, and nature lover.",
+            "images/zeljko1.jpg"),
     ];
 }

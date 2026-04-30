@@ -27,4 +27,7 @@ builder.Services.AddContentful(builder.Configuration);
 // Contentful service
 builder.Services.AddScoped<IContentfulService, ContentfulService>();
 
+// Localization
+builder.Services.AddScoped<LanguageService>();
+
 await builder.Build().RunAsync();

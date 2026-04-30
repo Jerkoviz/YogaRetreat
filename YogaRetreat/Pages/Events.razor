@@ -1,13 +1,14 @@
 @page "/events"
 @inject IContentfulService ContentfulService
+@inject LanguageService Lang
 
-<PageTitle>Retreati</PageTitle>
+<PageTitle>@Lang.T("Retreati", "Retreats")</PageTitle>
 
 <div style="padding-top:64px;">
     <MudContainer MaxWidth="MaxWidth.Large" Style="padding:3rem 1rem;">
-        <MudText Typo="Typo.h3" Style="margin-bottom:0.5rem;">Svi retreati</MudText>
+        <MudText Typo="Typo.h3" Style="margin-bottom:0.5rem;">@Lang.T("Svi retreati", "All Retreats")</MudText>
         <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:2.5rem;">
-            Otkrijte predstojeće i prošle retreat doživljaje
+            @Lang.T("Otkrijte predstojeće i prošle retreat doživljaje", "Discover upcoming and past retreat experiences")
         </MudText>
 
         @if (_isLoading)
@@ -27,13 +28,13 @@
         }
         else if (!_events.Any())
         {
-            <MudAlert Severity="Severity.Info">Nema retreata. Uskoro se vraćamo!</MudAlert>
+            <MudAlert Severity="Severity.Info">@Lang.T("Nema retreata. Uskoro se vraćamo!", "No retreats yet. We'll be back soon!")</MudAlert>
         }
         else
         {
             @if (_upcomingEvents.Any())
             {
-                <MudText Typo="Typo.h5" Style="margin-bottom:1.5rem; color:#6B8C6B;">Predstojeći retreati</MudText>
+                <MudText Typo="Typo.h5" Style="margin-bottom:1.5rem; color:#6B8C6B;">@Lang.T("Predstojeći retreati", "Upcoming Retreats")</MudText>
                 <MudGrid Style="margin-bottom:3rem;">
                     @foreach (var ev in _upcomingEvents)
                     {
@@ -46,7 +47,7 @@
 
             @if (_pastEvents.Any())
             {
-                <MudText Typo="Typo.h5" Style="margin-bottom:1.5rem; color:#9E9A94;">Prošli retreati</MudText>
+                <MudText Typo="Typo.h5" Style="margin-bottom:1.5rem; color:#9E9A94;">@Lang.T("Prošli retreati", "Past Retreats")</MudText>
                 <MudGrid>
                     @foreach (var ev in _pastEvents)
                     {
@@ -76,7 +77,7 @@
         }
         catch (Exception)
         {
-            _errorMessage = "Nije moguće učitati retreate. Pokušajte ponovo.";
+            _errorMessage = Lang.T("Nije moguće učitati retreate. Pokušajte ponovo.", "Unable to load retreats. Please try again.");
         }
         finally
         {

@@ -1,8 +1,9 @@
 @page "/register"
 @page "/register/{Slug}"
 @inject IContentfulService ContentfulService
+@inject LanguageService Lang
 
-<PageTitle>Register — @(_event?.Title ?? "Yoga Retreat")</PageTitle>
+<PageTitle>@Lang.T("Prijava", "Register") — @(_event?.Title ?? Lang.T("Yoga Retreat", "Yoga Retreat"))</PageTitle>
 
 <div style="padding-top:64px;">
     @if (_isLoading)
@@ -46,9 +47,9 @@
         else
         {
             <MudContainer MaxWidth="MaxWidth.Medium" Style="padding:2rem 1rem 0;">
-                <MudText Typo="Typo.h4" Style="margin-bottom:0.5rem;">Register for a Retreat</MudText>
+                <MudText Typo="Typo.h4" Style="margin-bottom:0.5rem;">@Lang.T("Prijavite se za retreat", "Register for a Retreat")</MudText>
                 <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:1rem;">
-                    Fill in the form below to enquire or register for one of our retreats.
+                    @Lang.T("Popunite formular ispod za prijavu ili upit za jedan od naših retreata.", "Fill in the form below to enquire or register for one of our retreats.")
                 </MudText>
             </MudContainer>
         }
@@ -67,8 +68,9 @@
         {
             <MudContainer MaxWidth="MaxWidth.Medium" Style="padding:2rem 1rem;">
                 <MudAlert Severity="Severity.Warning">
-                    Registration form is not configured for this retreat.
-                    Please <MudLink Href="@($"mailto:{_contactEmail}")">contact us</MudLink> directly.
+                    @Lang.T("Formular za prijavu nije podešen za ovaj retreat. Molimo vas da nas ", "Registration form is not configured for this retreat. Please ")
+                    <MudLink Href="@($"mailto:{_contactEmail}")">@Lang.T("kontaktirate", "contact us")</MudLink>
+                    @Lang.T(" direktno.", " directly.")
                 </MudAlert>
             </MudContainer>
         }
@@ -103,7 +105,7 @@
         }
         catch (Exception)
         {
-            _errorMessage = "Unable to load registration form. Please try again later.";
+            _errorMessage = Lang.T("Nije moguće učitati formular. Pokušajte ponovo.", "Unable to load registration form. Please try again later.");
         }
         finally
         {

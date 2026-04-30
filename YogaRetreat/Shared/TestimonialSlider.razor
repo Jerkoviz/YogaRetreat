@@ -1,11 +1,12 @@
 @namespace YogaRetreat.Shared
 @implements IDisposable
+@inject LanguageService Lang
 
 @if (Testimonials.Any())
 {
     <MudPaper Elevation="0" Style="background:#F0EDE8; padding:3rem 1.5rem; border-radius:8px; text-align:center; position:relative;">
         <MudText Typo="Typo.h6" Style="color:#5A5A5A; margin-bottom:2rem; text-transform:uppercase; letter-spacing:0.1em; font-size:0.85rem;">
-            What Our Guests Say
+            @Lang.T("Šta kažu naši gosti", "What Our Guests Say")
         </MudText>
 
         @{

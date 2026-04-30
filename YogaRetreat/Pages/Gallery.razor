@@ -1,14 +1,15 @@
 @page "/gallery"
 @inject IContentfulService ContentfulService
 @inject IDialogService DialogService
+@inject LanguageService Lang
 
-<PageTitle>Galerija</PageTitle>
+<PageTitle>@Lang.T("Galerija", "Gallery")</PageTitle>
 
 <div style="padding-top:64px;">
     <MudContainer MaxWidth="MaxWidth.Large" Style="padding:3rem 1rem;">
-        <MudText Typo="Typo.h3" Style="margin-bottom:0.5rem;">Galerija</MudText>
+        <MudText Typo="Typo.h3" Style="margin-bottom:0.5rem;">@Lang.T("Galerija", "Gallery")</MudText>
         <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:2.5rem;">
-            Trenuci sa naših retreata
+            @Lang.T("Trenuci sa naših retreata", "Moments from our retreats")
         </MudText>
 
         @if (_isLoading)
@@ -22,11 +23,11 @@
         }
         else if (!string.IsNullOrEmpty(_errorMessage))
         {
-            <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+            <MudAlert Severity="Severity.Error">@Lang.T("Nije moguće učitati galeriju. Pokušajte ponovo.", "Unable to load gallery. Please try again.")</MudAlert>
         }
         else if (!_albums.Any())
         {
-            <MudAlert Severity="Severity.Info">Još nema fotografija. Uskoro se vraćamo!</MudAlert>
+            <MudAlert Severity="Severity.Info">@Lang.T("Još nema fotografija. Uskoro se vraćamo!", "No photos yet. We'll be back soon!")</MudAlert>
         }
         else
         {
@@ -58,7 +59,7 @@
         <DialogActions>
             <MudIconButton Icon="@Icons.Material.Filled.ChevronLeft" OnClick="LightboxPrev" Disabled="_lightboxIndex == 0" />
             <MudSpacer />
-            <MudButton OnClick="CloseLightbox" Color="Color.Default">Zatvori</MudButton>
+            <MudButton OnClick="CloseLightbox" Color="Color.Default">@Lang.T("Zatvori", "Close")</MudButton>
             <MudSpacer />
             <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" OnClick="LightboxNext" Disabled="_lightboxIndex >= _lightboxAlbum.ImageUrls.Length - 1" />
         </DialogActions>
@@ -82,15 +83,49 @@
         BackdropClick = true
     };
 
+    private static readonly GalleryAlbum _placeAlbum = new(
+        Slug: "vikendica",
+        Title: "Vikendica",
+        Description: null,
+        CoverImageUrl: "images/place/MRK03028.jpg",
+        ImageUrls:
+        [
+            "images/place/MRK03028.jpg",
+            "images/place/MRK03030.jpg",
+            "images/place/MRK03039.jpg",
+            "images/place/MRK03057.jpg",
+            "images/place/MRK03060.jpg",
+            "images/place/MRK03064.jpg",
+            "images/place/MRK03068.jpg",
+            "images/place/MRK03076.jpg",
+            "images/place/MRK03083.jpg",
+            "images/place/MRK03086.jpg",
+            "images/place/MRK03087.jpg",
+            "images/place/MRK03092.jpg",
+            "images/place/MRK03112.jpg",
+            "images/place/borovasuma.jpg",
+            "images/place/pogled.jpg",
+            "images/place/sajt.jpg",
+            "images/place/sajt2.jpg",
+            "images/place/sajt3.jpg",
+            "images/place/borovasuma2.jpg",
+            "images/place/chill.JPEG",
+        ],
+        Date: new DateTime(2024, 1, 1),
+        LinkedEventSlug: null
+    );
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _albums = await ContentfulService.GetGalleryAlbumsAsync();
+            var contentfulAlbums = await ContentfulService.GetGalleryAlbumsAsync();
+            _albums = new[] { _placeAlbum }.Concat(contentfulAlbums).ToList();
         }
         catch (Exception)
         {
-            _errorMessage = "Nije moguće učitati galeriju. Pokušajte ponovo.";
+            _albums = [_placeAlbum];
+            _errorMessage = null;
         }
         finally
         {

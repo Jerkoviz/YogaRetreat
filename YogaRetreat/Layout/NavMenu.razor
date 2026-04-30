@@ -1,4 +1,5 @@
 @inject NavigationManager Nav
+@inject LanguageService Lang
 
 <MudAppBar Elevation="1" Color="Color.Primary" Fixed="true">
     <MudIconButton Icon="@Icons.Material.Filled.Menu"
@@ -10,32 +11,41 @@
     <MudLink Href="/" Class="d-flex align-center" Style="text-decoration:none; gap:0.5rem; color:white;">
         @if (!string.IsNullOrEmpty(SiteConfig?.LogoUrl))
         {
-            <img src="@SiteConfig.LogoUrl" alt="@(SiteConfig?.SiteName ?? "Yoga Retreat")" style="height:36px;" />
+            <img src="@SiteConfig.LogoUrl" alt="@(SiteConfig?.SiteName ?? "Šumozov")" style="height:36px;" />
         }
         <MudText Typo="Typo.h6" Style="color:white; font-weight:600;">
-            @(SiteConfig?.SiteName ?? "Šumoterapija")
+            @(SiteConfig?.SiteName ?? "Šumozov")
         </MudText>
     </MudLink>
 
     <MudSpacer />
 
     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
-        <MudButton Href="/" Color="Color.Inherit" Variant="Variant.Text">Početna</MudButton>
-        <MudButton Href="/events" Color="Color.Inherit" Variant="Variant.Text">Retreati</MudButton>
-        <MudButton Href="/gallery" Color="Color.Inherit" Variant="Variant.Text">Galerija</MudButton>
-        <MudButton Href="/about-us" Color="Color.Inherit" Variant="Variant.Text">O nama</MudButton>
+        <MudButton Href="/" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("Početna", "Home")</MudButton>
+        @* <MudButton Href="/events" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("Retreati", "Retreats")</MudButton> *@
+        <MudButton Href="/gallery" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("Galerija", "Gallery")</MudButton>
+        <MudButton Href="/about-us" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("O nama", "About Us")</MudButton>
     </MudHidden>
+
+    <MudButton Size="Size.Small" Color="Color.Inherit"
+               Variant="@(Lang.Current == "sr" ? Variant.Outlined : Variant.Text)"
+               Style="min-width:36px; padding:0 8px;"
+               OnClick="@(() => SetLang("sr"))">SR</MudButton>
+    <MudButton Size="Size.Small" Color="Color.Inherit"
+               Variant="@(Lang.Current == "en" ? Variant.Outlined : Variant.Text)"
+               Style="min-width:36px; padding:0 8px;"
+               OnClick="@(() => SetLang("en"))">EN</MudButton>
 </MudAppBar>
 
 <MudDrawer @bind-Open="_drawerOpen" Elevation="2" Variant="DrawerVariant.Temporary">
     <MudDrawerHeader>
-        <MudText Typo="Typo.h6">Meni</MudText>
+        <MudText Typo="Typo.h6">@Lang.T("Meni", "Menu")</MudText>
     </MudDrawerHeader>
     <MudNavMenu>
-        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home" OnClick="CloseDrawer">Početna</MudNavLink>
-        <MudNavLink Href="/events" Icon="@Icons.Material.Filled.Event" OnClick="CloseDrawer">Retreati</MudNavLink>
-        <MudNavLink Href="/gallery" Icon="@Icons.Material.Filled.PhotoLibrary" OnClick="CloseDrawer">Galerija</MudNavLink>
-        <MudNavLink Href="/about-us" Icon="@Icons.Material.Filled.People" OnClick="CloseDrawer">O nama</MudNavLink>
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home" OnClick="CloseDrawer">@Lang.T("Početna", "Home")</MudNavLink>
+        @* <MudNavLink Href="/events" Icon="@Icons.Material.Filled.Event" OnClick="CloseDrawer">@Lang.T("Retreati", "Retreats")</MudNavLink> *@
+        <MudNavLink Href="/gallery" Icon="@Icons.Material.Filled.PhotoLibrary" OnClick="CloseDrawer">@Lang.T("Galerija", "Gallery")</MudNavLink>
+        <MudNavLink Href="/about-us" Icon="@Icons.Material.Filled.People" OnClick="CloseDrawer">@Lang.T("O nama", "About Us")</MudNavLink>
     </MudNavMenu>
 </MudDrawer>
 
@@ -46,4 +56,5 @@
 
     private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
     private void CloseDrawer() => _drawerOpen = false;
+    private async Task SetLang(string lang) => await Lang.SetAsync(lang);
 }

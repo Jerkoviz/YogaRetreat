@@ -1,14 +1,15 @@
 @layout YogaRetreat.Layout.MainLayout
+@inject LanguageService Lang
 
-<PageTitle>Page Not Found</PageTitle>
+<PageTitle>@Lang.T("Stranica nije pronađena", "Page Not Found")</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Small" Style="padding:6rem 1rem; text-align:center;">
     <MudText Typo="Typo.h1" Style="font-size:6rem; color:#E0DDD8; font-weight:600; line-height:1;">404</MudText>
-    <MudText Typo="Typo.h4" Style="margin-bottom:1rem;">Page Not Found</MudText>
+    <MudText Typo="Typo.h4" Style="margin-bottom:1rem;">@Lang.T("Stranica nije pronađena", "Page Not Found")</MudText>
     <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:2.5rem;">
-        The page you are looking for does not exist or has been moved.
+        @Lang.T("Stranica koju tražite ne postoji ili je premeštena.", "The page you are looking for does not exist or has been moved.")
     </MudText>
     <MudButton Href="/" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">
-        Back to Home
+        @Lang.T("Nazad na početnu", "Back to Home")
     </MudButton>
 </MudContainer>
