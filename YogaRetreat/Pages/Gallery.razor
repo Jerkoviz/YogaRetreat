@@ -8,9 +8,9 @@
 <div style="padding-top:64px;">
     <MudContainer MaxWidth="MaxWidth.Large" Style="padding:3rem 1rem;">
         <MudText Typo="Typo.h3" Style="margin-bottom:0.5rem;">@Lang.T("Galerija", "Gallery")</MudText>
-        <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:2.5rem;">
+       @*  <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:2.5rem;">
             @Lang.T("Trenuci sa naših retreata", "Moments from our retreats")
-        </MudText>
+        </MudText> *@
 
         @if (_isLoading)
         {
@@ -84,8 +84,8 @@
     };
 
     private static readonly GalleryAlbum _placeAlbum = new(
-        Slug: "vikendica",
-        Title: "Vikendica",
+        Slug: " ",
+        Title: " ",
         Description: null,
         CoverImageUrl: "images/place/MRK03028.jpg",
         ImageUrls:

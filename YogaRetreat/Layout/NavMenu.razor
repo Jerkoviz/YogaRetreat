@@ -22,7 +22,7 @@
 
     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="false">
         <MudButton Href="/" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("Početna", "Home")</MudButton>
-        @* <MudButton Href="/events" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("Retreati", "Retreats")</MudButton> *@
+        <MudButton Href="/events" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("Kalendar događaja", "Upcoming Events")</MudButton>
         <MudButton Href="/gallery" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("Galerija", "Gallery")</MudButton>
         <MudButton Href="/about-us" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("O nama", "About Us")</MudButton>
     </MudHidden>
@@ -43,7 +43,7 @@
     </MudDrawerHeader>
     <MudNavMenu>
         <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home" OnClick="CloseDrawer">@Lang.T("Početna", "Home")</MudNavLink>
-        @* <MudNavLink Href="/events" Icon="@Icons.Material.Filled.Event" OnClick="CloseDrawer">@Lang.T("Retreati", "Retreats")</MudNavLink> *@
+        <MudNavLink Href="/events" Icon="@Icons.Material.Filled.Event" OnClick="CloseDrawer">@Lang.T("Kalendar događaja", "Upcoming Events")</MudNavLink>
         <MudNavLink Href="/gallery" Icon="@Icons.Material.Filled.PhotoLibrary" OnClick="CloseDrawer">@Lang.T("Galerija", "Gallery")</MudNavLink>
         <MudNavLink Href="/about-us" Icon="@Icons.Material.Filled.People" OnClick="CloseDrawer">@Lang.T("O nama", "About Us")</MudNavLink>
     </MudNavMenu>

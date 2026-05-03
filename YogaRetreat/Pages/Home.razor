@@ -28,15 +28,46 @@ else if (!string.IsNullOrEmpty(_errorMessage))
 }
 else
 {
-    <HeroSection ImageUrl="@(_siteConfig?.HeroFallbackImageUrl ?? "/images/terasa.jpg")"
-                 VideoUrl="@_siteConfig?.HeroVideoUrl"
-                 Headline="@(_siteConfig?.SiteName ?? "Šumozov")"
-                 Subheadline="@(_siteConfig?.Tagline ?? Lang.T("Pronađi mir. Transformiši svoju praksu.", "Find peace. Transform your practice."))"
-                 CtaText="@Lang.T("Istražite retreate", "Explore retreats")"
-                 CtaHref="/events"
-                 FullHeight="true" />
-
+    <div style="position:relative; min-height:60vh; display:flex; align-items:center; justify-content:center; padding:4rem 1rem; overflow:hidden;">        
+        <div style="position:absolute; inset:0; background:rgba(245,240,232,0.55); z-index:1;"></div>
+        <div style="position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; text-align:center; gap:1.5rem;">
+            <div style="position:relative; display:inline-block;">
+                <img src="images/place/logo.png" alt="Šumozov" style="width:min(380px, 80vw); display:block;" />
+                <div style="position:absolute; bottom:0; left:0; right:0; padding:1rem 1.5rem 1.25rem; background:linear-gradient(transparent, rgba(245,240,232,0.85));">
+                    <MudText Typo="Typo.h6" Style="color:#3D5432; font-weight:400; letter-spacing:0.04em;">
+                        @(_siteConfig?.Tagline ?? Lang.T("Udahni miris borova. Izdahni stres.", "Breathe in the pine forest. Breathe out the stress."))
+                    </MudText>
+                </div>
+            </div>
+            <MudButton Href="/events"
+                       Variant="Variant.Filled"
+                       Size="Size.Large"
+                       Style="background:#3D5432; color:#F5F0E8; padding:0.75rem 2.5rem; font-size:1rem; letter-spacing:0.05em; border-radius:4px;">
+                @Lang.T("Kalendar događaja", "Explore events")
+            </MudButton>
+        </div>
+    </div>
     <MudContainer MaxWidth="MaxWidth.Medium" Style="padding:4rem 1rem 3rem;">
+        <MudText Typo="Typo.h4" Align="Align.Center" Style="margin-bottom:2rem; font-weight:600;">@Lang.T("Ovako je sve počelo", "")</MudText>
+        <MudText Typo="Typo.body1" Align="Align.Center" Style="color:#5A5A5A; line-height:1.9; max-width:640px; margin:0 auto;">
+            Godinama smo lutali neutabanim stazama Fruške gore i svaki put pogledom zastajali na jednoj usamljenoj vikendici na susednom brdu. Pitali smo se kome pripada i kako se do nje stiže.<br /><br />
+            U decembru 2021. saznali smo da je na prodaju. Delovalo je neverovatno da je to baš ta kuća — a još manje verovatno da bismo baš mi mogli postati njeni novi srećni vlasnici.<br /><br />
+            Nakon nekoliko godina krčenja, košenja, sečenja, krečenja, gletovanja, šmirglanja... i mnogo strpljenja, ovo mesto postalo je naša šumska oaza u kojoj danas postoje samo tišina, zelenilo i osećaj da vreme teče malo sporije.<br /><br />
+            I najbolje od svega — nije fatamorgana!
+        </MudText>
+            @* <MudTimeline TimelineAlign="TimelineAlign.Start">
+            @foreach (var item in _schedule)
+            {
+                <MudTimelineItem Color="item.Color" Size="Size.Small">
+                    <ItemContent>
+                        <MudText Typo="Typo.subtitle1" Style="font-weight:600;">@Lang.T(item.TitleSr, item.TitleEn)</MudText>
+                        <MudText Typo="Typo.body2" Style="color:#5A5A5A;">@Lang.T(item.BodySr, item.BodyEn)</MudText>
+                    </ItemContent>
+                </MudTimelineItem>
+            }
+        </MudTimeline> *@
+    </MudContainer>
+   @*  <MudContainer MaxWidth="MaxWidth.Medium" Style="padding:4rem 1rem 3rem;">
         <MudText Typo="Typo.h4" Align="Align.Center" Style="margin-bottom:2rem; font-weight:600;">@Lang.T("Plan puta", "Day Schedule")</MudText>
         <MudTimeline TimelineAlign="TimelineAlign.Start">
             @foreach (var item in _schedule)
@@ -49,12 +80,12 @@ else
                 </MudTimelineItem>
             }
         </MudTimeline>
-    </MudContainer>
+    </MudContainer> *@
 
     @if (_featuredEvents.Any())
     {
         <MudContainer MaxWidth="MaxWidth.Large" Style="padding:2rem 1rem 3rem;">
-            <MudText Typo="Typo.h3" Align="Align.Center" Style="margin-bottom:0.5rem;">@Lang.T("Izdvojeni retreati", "Featured Retreats")</MudText>
+            <MudText Typo="Typo.h3" Align="Align.Center" Style="margin-bottom:0.5rem;">@Lang.T("Izdvojeni događaji", "Featured Events")</MudText>
             <MudText Typo="Typo.body1" Align="Align.Center" Style="color:#5A5A5A; margin-bottom:3rem;">
                 @Lang.T("Pažljivo odabrana transformativna iskustva za sve nivoe", "Carefully selected transformative experiences for all levels")
             </MudText>
@@ -89,38 +120,6 @@ else
     private IReadOnlyList<ITestimonial> _testimonials = Array.Empty<ITestimonial>();
     private bool _isLoading = true;
     private string? _errorMessage;
-
-    private static readonly (string TitleSr, string TitleEn, string BodySr, string BodyEn, Color Color)[] _schedule =
-    [
-        ("09:00h – Sastanak i ulazak u šumu", "09:00h – Meeting and entering the forest",
-         "Sastanak na dogovorenoj lokaciji (parking). Lagani 10-minutni ulazak u šumu do naše baze – autentične fruškogorske vikendice.",
-         "Meeting at the agreed location (parking). A leisurely 10-minute walk into the forest to our base – an authentic Fruška Gora retreat house.",
-         Color.Primary),
-        ("09:30h – Jutarnje osveženje", "09:30h – Morning refreshment",
-         "Domaća limunada sa đumbirom i upoznavanje u debeloj hladovini.",
-         "Homemade ginger lemonade and introductions in the cool shade.",
-         Color.Primary),
-        ("10:00h – 12:00h – Hatha Yoga & Pranayama", "10:00h – 12:00h – Hatha Yoga & Pranayama",
-         "Dvočasovna sesija fokusirana na detoksikaciju tela i duboko disanje. Prilagođeno svima, bez obzira na nivo iskustva.",
-         "A two-hour session focused on body detoxification and deep breathing. Suitable for all, regardless of experience level.",
-         Color.Secondary),
-        ("12:30h – Opcioni hiking (1–2h)", "12:30h – Optional hiking (1–2h)",
-         "Istražujemo šumske staze, punimo pluća kiseonikom i uživamo u miru nacionalnog parka.",
-         "We explore forest trails, fill our lungs with oxygen, and enjoy the peace of the national park.",
-         Color.Primary),
-        ("14:30h – Zajednički vegetarijanski ručak", "14:30h – Shared vegetarian lunch",
-         "Šareni, hranljivi obrok spremljen od lokalnih namirnica koji će te nahraniti, a ne uspavati.",
-         "A colorful, nutritious meal prepared from local ingredients that will nourish you without weighing you down.",
-         Color.Secondary),
-        ("15:30h – 17:00h – Vreme za tebe", "15:30h – 17:00h – Time for yourself",
-         "Čitanje knjige, dremka u ležaljci, ili jednostavno uživanje u tišini šume uz biljni čaj.",
-         "Reading a book, napping in a hammock, or simply enjoying the silence of the forest with herbal tea.",
-         Color.Primary),
-        ("17:00h – Povratak kući", "17:00h – Heading home",
-         "Lagani povratak ka kolima i polazak kući sa potpuno novom energijom.",
-         "A leisurely walk back to the cars and heading home with completely renewed energy.",
-         Color.Secondary),
-    ];
 
     protected override async Task OnInitializedAsync()
     {

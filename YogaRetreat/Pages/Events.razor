@@ -1,87 +1,152 @@
 @page "/events"
-@inject IContentfulService ContentfulService
 @inject LanguageService Lang
 
-<PageTitle>@Lang.T("Retreati", "Retreats")</PageTitle>
+<PageTitle>@Lang.T("Kalendar događaja", "Events")</PageTitle>
 
 <div style="padding-top:64px;">
     <MudContainer MaxWidth="MaxWidth.Large" Style="padding:3rem 1rem;">
-        <MudText Typo="Typo.h3" Style="margin-bottom:0.5rem;">@Lang.T("Svi retreati", "All Retreats")</MudText>
+        <MudText Typo="Typo.h3" Style="margin-bottom:0.5rem;">@Lang.T("Svi događaji", "All Events")</MudText>
         <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:2.5rem;">
-            @Lang.T("Otkrijte predstojeće i prošle retreat doživljaje", "Discover upcoming and past retreat experiences")
+            @Lang.T("Otkrijte predstojeće događaje", "Explore upcoming events")
         </MudText>
 
-        @if (_isLoading)
-        {
-            <MudGrid>
-                @for (int i = 0; i < 6; i++)
-                {
-                    <MudItem xs="12" sm="6" md="4">
-                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="340px" />
-                    </MudItem>
-                }
-            </MudGrid>
-        }
-        else if (!string.IsNullOrEmpty(_errorMessage))
-        {
-            <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
-        }
-        else if (!_events.Any())
-        {
-            <MudAlert Severity="Severity.Info">@Lang.T("Nema retreata. Uskoro se vraćamo!", "No retreats yet. We'll be back soon!")</MudAlert>
-        }
-        else
-        {
-            @if (_upcomingEvents.Any())
+        <MudExpansionPanels MultiExpansion="false" Elevation="2">
+            @foreach (var ev in _events)
             {
-                <MudText Typo="Typo.h5" Style="margin-bottom:1.5rem; color:#6B8C6B;">@Lang.T("Predstojeći retreati", "Upcoming Retreats")</MudText>
-                <MudGrid Style="margin-bottom:3rem;">
-                    @foreach (var ev in _upcomingEvents)
-                    {
-                        <MudItem xs="12" sm="6" md="4">
-                            <EventCard Event="ev" />
-                        </MudItem>
-                    }
-                </MudGrid>
-            }
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; width:100%; padding:0.25rem 0;">
+                            <div>
+                                <MudText Typo="Typo.h6" Style="font-weight:600; margin-bottom:0.2rem;">@Lang.T(ev.TitleSr, ev.TitleEn)</MudText>
+                                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                                    @if (!string.IsNullOrEmpty(ev.Location))
+                                    {
+                                        <div style="display:flex; align-items:center; gap:0.3rem; color:#5A5A5A;">
+                                            <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" />
+                                            <MudText Typo="Typo.body2">@ev.Location</MudText>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(ev.DateSr) || !string.IsNullOrEmpty(ev.DateEn))
+                                    {
+                                        <div style="display:flex; align-items:center; gap:0.3rem; color:#5A5A5A;">
+                                            <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Size="Size.Small" />
+                                            <MudText Typo="Typo.body2">@Lang.T(ev.DateSr, ev.DateEn)</MudText>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            @if (!string.IsNullOrEmpty(ev.PriceDisplay))
+                            {
+                                <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled" Style="font-weight:600;">@ev.PriceDisplay</MudChip>
+                            }
+                        </div>
+                    </TitleContent>
+                    <ChildContent>
+                        <MudDivider Style="margin-bottom:1.5rem;" />
 
-            @if (_pastEvents.Any())
-            {
-                <MudText Typo="Typo.h5" Style="margin-bottom:1.5rem; color:#9E9A94;">@Lang.T("Prošli retreati", "Past Retreats")</MudText>
-                <MudGrid>
-                    @foreach (var ev in _pastEvents)
-                    {
-                        <MudItem xs="12" sm="6" md="4">
-                            <EventCard Event="ev" />
-                        </MudItem>
-                    }
-                </MudGrid>
+                        @if (!string.IsNullOrEmpty(ev.DescriptionSr) || !string.IsNullOrEmpty(ev.DescriptionEn))
+                        {
+                            <MudText Typo="Typo.body1" Style="color:#5A5A5A; margin-bottom:2rem; line-height:1.8;">
+                                @Lang.T(ev.DescriptionSr, ev.DescriptionEn)
+                            </MudText>
+                        }
+
+                        @if (ev.Schedule.Length > 0)
+                        {
+                            <MudText Typo="Typo.h6" Style="font-weight:600; margin-bottom:1rem;">@Lang.T("Plan dana", "Day Schedule")</MudText>
+                            <MudTimeline TimelineAlign="TimelineAlign.Start">
+                                @foreach (var item in ev.Schedule)
+                                {
+                                    <MudTimelineItem Color="@item.Color" Size="Size.Small">
+                                        <ItemContent>
+                                            <MudText Typo="Typo.subtitle1" Style="font-weight:600;">@Lang.T(item.TitleSr, item.TitleEn)</MudText>
+                                            <MudText Typo="Typo.body2" Style="color:#5A5A5A;">@Lang.T(item.BodySr, item.BodyEn)</MudText>
+                                        </ItemContent>
+                                    </MudTimelineItem>
+                                }
+                            </MudTimeline>
+                        }
+
+                        <MudPaper Elevation="0" Style="background:#F5F0E8; border-radius:8px; padding:1.25rem 1.5rem; margin-top:2rem;">
+                            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                                <MudIcon Icon="@Icons.Material.Filled.Info" Size="Size.Small" Style="color:#3D5432;" />
+                                <MudText Typo="Typo.subtitle2" Style="color:#3D5432; font-weight:600;">
+                                    @Lang.T("Prijava", "How to register")
+                                </MudText>
+                            </div>
+                            <MudText Typo="Typo.body2" Style="color:#5A5A5A; line-height:1.7;">
+                                @Lang.T(
+                                    "Prijava je moguća pozivom ili porukom na Instagram. Kontaktirajte nas na +381 69 350 6437 ili putem Instagram poruke.",
+                                    "Registration is available by phone call or Instagram message. Contact us at +381 69 350 6437 or via Instagram message."
+                                )
+                            </MudText>
+                        </MudPaper>
+                    </ChildContent>
+                </MudExpansionPanel>
             }
+        </MudExpansionPanels>
+
+        @if (!_events.Any())
+        {
+            <MudAlert Severity="Severity.Info">@Lang.T("Trenutno nema planiranih događaja. Uskoro se vraćamo!", "No upcoming events currently. Stay tuned!")</MudAlert>
         }
     </MudContainer>
 </div>
 
 @code {
-    private IReadOnlyList<IRetreatEvent> _events = Array.Empty<IRetreatEvent>();
-    private bool _isLoading = true;
-    private string? _errorMessage;
+    private record ScheduleItem(string TitleSr, string TitleEn, string BodySr, string BodyEn, Color Color);
 
-    private IEnumerable<IRetreatEvent> _upcomingEvents => _events.Where(e => e.StartDate >= DateTime.UtcNow);
-    private IEnumerable<IRetreatEvent> _pastEvents => _events.Where(e => e.StartDate < DateTime.UtcNow);
+    private record LocalEvent(
+        string TitleSr, string TitleEn,
+        string DateSr, string DateEn,
+        string DescriptionSr, string DescriptionEn,
+        string? PriceDisplay,
+        string? Location,
+        ScheduleItem[] Schedule
+    );
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            _events = await ContentfulService.GetAllEventsAsync();
-        }
-        catch (Exception)
-        {
-            _errorMessage = Lang.T("Nije moguće učitati retreate. Pokušajte ponovo.", "Unable to load retreats. Please try again.");
-        }
-        finally
-        {
-            _isLoading = false;
-        }
-    }
+    private static readonly LocalEvent[] _events =
+    [
+        new(
+            TitleSr: "Yoga retreat na Fruškoj Gori",
+            TitleEn: "Yoga Retreat on Fruška Gora",
+            DateSr: "16.5.2026.",
+            DateEn: "16.5.2026.",
+            DescriptionSr: "Jedan dan potpunog odmora u srcu Fruške Gore. Jutarnja joga, zajednički ručak, šetnja šumom i vreme za sebe — sve to u autentičnoj vikendici okruženoj borovom šumom.",
+            DescriptionEn: "A full day of rest in the heart of Fruška Gora. Morning yoga, a shared lunch, a forest walk, and time for yourself — all in an authentic retreat house surrounded by pine forest.",
+            PriceDisplay: "3000 RSD",
+            Location: "Fruška Gora",
+            Schedule:
+            [
+                new("10:00h – Sastanak i ulazak u šumu", "10:00h – Meeting and entering the forest",
+                    "Sastanak na dogovorenoj lokaciji (parking). Lagana 10-minutna šetnja kroz šumu do naše vikendice.",
+                    "Meeting at the agreed location (parking). A leisurely 10-minute walk through the forest to our base.",
+                    Color.Primary),
+                new("10:30h – Jutarnje osveženje", "10:30h – Morning refreshment",
+                    "Osvežavajuće piće i upoznavanje u debeloj hladovini.",
+                    "Refreshing drinks and introductions in the cool shade.",
+                    Color.Primary),
+                new("11:00h – 12:15h – Chakra Yoga", "11:00h – 12:15h – Chakra Yoga",
+                    "Opuštajuća sesija joge prilagođena svima, bez obzira na nivo iskustva.",
+                    "A relaxing yoga session suitable for all, regardless of experience level.",
+                    Color.Secondary),
+                new("12:30h – Opcioni hiking (1–2h)", "12:30h – Optional hiking (1–2h)",
+                    "Istražujemo šumske staze, punimo pluća kiseonikom i uživamo u miru nacionalnog parka.",
+                    "We explore forest trails, fill our lungs with oxygen, and enjoy the peace of the national park.",
+                    Color.Primary),
+                new("14:30h – Vegetarijanski ručak", "14:30h – Vegetarian lunch",
+                    "Lagani, hranljivi obrok koji će te nahraniti, a ne uspavati.",
+                    "A light, nutritious meal that will nourish you without weighing you down.",
+                    Color.Secondary),
+                new("15:30h – 17:00h – Vreme za tebe", "15:30h – 17:00h – Time for yourself",
+                    "Čitanje knjige, dremka u ležaljci, ili jednostavno uživanje u tišini šume uz biljni čaj.",
+                    "Reading a book, napping in a hammock, or simply enjoying the silence of the forest while sipping a herbal tea.",
+                    Color.Primary),
+                new("17:00h – Kraj programa", "17:00h – End of the day",
+                    "Lagani povratak ka kolima i polazak kući sa potpuno novom energijom.",
+                    "A leisurely walk back to the cars and heading home with completely renewed energy.",
+                    Color.Secondary),
+            ]
+        ),
+    ];
 }

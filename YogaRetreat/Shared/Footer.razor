@@ -4,30 +4,32 @@
 <MudPaper Elevation="0" Style="background:#2D2D2D; color:#F8F5F0; margin-top:4rem; padding:3rem 1rem 1.5rem;">
     <MudContainer MaxWidth="MaxWidth.Large">
         <MudGrid>
+
             <MudItem xs="12" sm="4">
                 <MudText Typo="Typo.h6" Style="color:#F8F5F0; margin-bottom:0.75rem;">
                     @(SiteConfig?.SiteName ?? "Šumozov")
                 </MudText>
-                <MudText Typo="Typo.body2" Style="color:#B0ADA8; line-height:1.7;">
-                    @(SiteConfig?.Tagline ?? Lang.T("Pronađi mir. Transformiši svoju praksu.", "Find peace. Transform your practice."))
-                </MudText>
-                @if (!string.IsNullOrEmpty(SiteConfig?.ContactEmail))
-                {
-                    <MudLink Href="@($"mailto:{SiteConfig.ContactEmail}")"
-                             Style="color:#C4785A; display:block; margin-top:0.75rem; font-size:0.9rem;">
-                        @SiteConfig.ContactEmail
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Style="color:#B0ADA8;" />
+                    <MudLink Href="https://www.google.com/maps?q=45.123830,19.739606" Target="_blank" Style="color:#B0ADA8; font-size:0.9rem;">
+                        45.123830, 19.739606
                     </MudLink>
-                }
+                </div>
             </MudItem>
 
             <MudItem xs="12" sm="4">
                 <MudText Typo="Typo.subtitle2" Style="color:#F8F5F0; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; font-size:0.8rem;">
-                    @Lang.T("Istraži", "Explore")
+                    @Lang.T("Kontakt", "Contact")
                 </MudText>
-                <div style="display:flex; flex-direction:column; gap:0.4rem;">
-                    <MudLink Href="/" Style="color:#B0ADA8;">@Lang.T("Početna", "Home")</MudLink>
-                    @* <MudLink Href="/events" Style="color:#B0ADA8;">@Lang.T("Retreati", "Retreats")</MudLink> *@
-                    <MudLink Href="/gallery" Style="color:#B0ADA8;">@Lang.T("Galerija", "Gallery")</MudLink>
+                <div style="display:flex; flex-direction:column; gap:0.6rem;">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Style="color:#B0ADA8;" />
+                        <MudLink Href="tel:+381693506437" Style="color:#B0ADA8; font-size:0.9rem;">+381 69 350 6437</MudLink>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Style="color:#B0ADA8;" />
+                        <MudLink Href="mailto:sumozov@gmail.com" Style="color:#B0ADA8; font-size:0.9rem;">sumozov@gmail.com</MudLink>
+                    </div>
                 </div>
             </MudItem>
 
@@ -35,7 +37,7 @@
                 <MudText Typo="Typo.subtitle2" Style="color:#F8F5F0; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; font-size:0.8rem;">
                     @Lang.T("Pratite nas", "Follow us")
                 </MudText>
-                <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
                     <MudIconButton Icon="@Icons.Custom.Brands.Instagram"
                                    Href="@(SiteConfig?.InstagramUrl ?? "https://www.instagram.com/ravnotezim_yogastudio?igsh=amVreG1vaHB6Nmhx")"
                                    Target="_blank"
@@ -56,6 +58,7 @@
                     }
                 </div>
             </MudItem>
+
         </MudGrid>
 
         <MudDivider Style="background:#444; margin:2rem 0 1rem;" />
