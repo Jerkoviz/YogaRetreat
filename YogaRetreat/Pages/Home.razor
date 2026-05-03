@@ -41,7 +41,7 @@ else
         <MudTimeline TimelineAlign="TimelineAlign.Start">
             @foreach (var item in _schedule)
             {
-                <MudTimelineItem Color="@item.Color" Size="Size.Small">
+                <MudTimelineItem Color="item.Color" Size="Size.Small">
                     <ItemContent>
                         <MudText Typo="Typo.subtitle1" Style="font-weight:600;">@Lang.T(item.TitleSr, item.TitleEn)</MudText>
                         <MudText Typo="Typo.body2" Style="color:#5A5A5A;">@Lang.T(item.BodySr, item.BodyEn)</MudText>

@@ -27,14 +27,14 @@
         <MudButton Href="/about-us" Color="Color.Inherit" Variant="Variant.Text">@Lang.T("O nama", "About Us")</MudButton>
     </MudHidden>
 
-    <MudButton Size="Size.Small" Color="Color.Inherit"
-               Variant="@(Lang.Current == "sr" ? Variant.Outlined : Variant.Text)"
-               Style="min-width:36px; padding:0 8px;"
-               OnClick="@(() => SetLang("sr"))">SR</MudButton>
-    <MudButton Size="Size.Small" Color="Color.Inherit"
-               Variant="@(Lang.Current == "en" ? Variant.Outlined : Variant.Text)"
-               Style="min-width:36px; padding:0 8px;"
-               OnClick="@(() => SetLang("en"))">EN</MudButton>
+    <div style="display:flex; align-items:center; gap:4px; margin-left:8px;">
+        <img src="/images/flags/sr.svg" alt="Srpski" title="Srpski"
+             style="width:28px; height:20px; object-fit:cover; border-radius:2px; cursor:pointer; opacity:@(Lang.Current == "sr" ? "1" : "0.4"); transition:opacity 0.2s;"
+             @onclick="@(() => SetLang("sr"))" />
+        <img src="/images/flags/en.svg" alt="English" title="English"
+             style="width:28px; height:20px; object-fit:cover; border-radius:2px; cursor:pointer; opacity:@(Lang.Current == "en" ? "1" : "0.4"); transition:opacity 0.2s;"
+             @onclick="@(() => SetLang("en"))" />
+    </div>
 </MudAppBar>
 
 <MudDrawer @bind-Open="_drawerOpen" Elevation="2" Variant="DrawerVariant.Temporary">
