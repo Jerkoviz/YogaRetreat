@@ -1,6 +1,7 @@
 @page "/"
 @inject IContentfulService ContentfulService
 @inject LanguageService Lang
+@implements IDisposable
 
 <PageTitle>@(_siteConfig?.SiteName ?? "Šumozov")</PageTitle>
 
@@ -48,12 +49,26 @@ else
         </div>
     </div>
     <MudContainer MaxWidth="MaxWidth.Medium" Style="padding:4rem 1rem 3rem;">
-        <MudText Typo="Typo.h4" Align="Align.Center" Style="margin-bottom:2rem; font-weight:600;">@Lang.T("Ovako je sve počelo", "")</MudText>
+        <MudText Typo="Typo.h4" Align="Align.Center" Style="margin-bottom:2rem; font-weight:600;">@Lang.T("Ovako je sve počelo", "How it all began")</MudText>
         <MudText Typo="Typo.body1" Align="Align.Center" Style="color:#5A5A5A; line-height:1.9; max-width:640px; margin:0 auto;">
-            Godinama smo lutali neutabanim stazama Fruške gore i svaki put pogledom zastajali na jednoj usamljenoj vikendici na susednom brdu. Pitali smo se kome pripada i kako se do nje stiže.<br /><br />
-            U decembru 2021. saznali smo da je na prodaju. Delovalo je neverovatno da je to baš ta kuća — a još manje verovatno da bismo baš mi mogli postati njeni novi srećni vlasnici.<br /><br />
-            Nakon nekoliko godina krčenja, košenja, sečenja, krečenja, gletovanja, šmirglanja... i mnogo strpljenja, ovo mesto postalo je naša šumska oaza u kojoj danas postoje samo tišina, zelenilo i osećaj da vreme teče malo sporije.<br /><br />
-            I najbolje od svega — nije fatamorgana!
+            @if (Lang.Current == "en")
+            {
+                <text>
+                    For years we wandered the untrodden trails of Fruška Gora, and every time our eyes would stop at a lonely cabin on the neighbouring hill. We wondered who it belonged to and how to reach it.<br /><br />
+                    In December 2021 we found out it was for sale. It seemed unbelievable that it was that exact house — and even less likely that we could become its new happy owners.<br /><br />
+                    After several years of clearing, mowing, cutting, whitewashing, plastering, sanding... and a lot of patience, this place became our forest oasis where today there is only silence, greenery, and the feeling that time moves a little slower.<br /><br />
+                    And best of all — it's not a mirage!
+                </text>
+            }
+            else
+            {
+                <text>
+                    Godinama smo lutali neutabanim stazama Fruške gore i svaki put pogledom zastajali na jednoj usamljenoj vikendici na susednom brdu. Pitali smo se kome pripada i kako se do nje stiže.<br /><br />
+                    U decembru 2021. saznali smo da je na prodaju. Delovalo je neverovatno da je to baš ta kuća — a još manje verovatno da bismo baš mi mogli postati njeni novi srećni vlasnici.<br /><br />
+                    Nakon nekoliko godina krčenja, košenja, sečenja, krečenja, gletovanja, šmirglanja... i mnogo strpljenja, ovo mesto postalo je naša šumska oaza u kojoj danas postoje samo tišina, zelenilo i osećaj da vreme teče malo sporije.<br /><br />
+                    I najbolje od svega — nije fatamorgana!
+                </text>
+            }
         </MudText>
             @* <MudTimeline TimelineAlign="TimelineAlign.Start">
             @foreach (var item in _schedule)
@@ -123,6 +138,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        Lang.OnChanged += OnLanguageChanged;
         try
         {
             var eventsTask = ContentfulService.GetFeaturedEventsAsync();
@@ -140,4 +156,7 @@ else
             _isLoading = false;
         }
     }
+
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Lang.OnChanged -= OnLanguageChanged;
 }

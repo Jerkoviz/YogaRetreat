@@ -1,5 +1,6 @@
 @namespace YogaRetreat.Shared
 @inject LanguageService Lang
+@implements IDisposable
 
 <MudPaper Elevation="0" Style="background:#2D2D2D; color:#F8F5F0; margin-top:4rem; padding:3rem 1rem 1.5rem;">
     <MudContainer MaxWidth="MaxWidth.Large">
@@ -70,4 +71,8 @@
 
 @code {
     [Parameter] public ISiteConfig? SiteConfig { get; set; }
+
+    protected override void OnInitialized() => Lang.OnChanged += OnLanguageChanged;
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Lang.OnChanged -= OnLanguageChanged;
 }
