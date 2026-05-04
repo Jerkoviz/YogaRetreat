@@ -2,6 +2,7 @@
 @inject IContentfulService ContentfulService
 @inject IDialogService DialogService
 @inject LanguageService Lang
+@implements IDisposable
 
 <PageTitle>@Lang.T("Galerija", "Gallery")</PageTitle>
 
@@ -117,6 +118,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Lang.OnChanged += OnLanguageChanged;
         try
         {
             var contentfulAlbums = await ContentfulService.GetGalleryAlbumsAsync();
@@ -152,4 +154,7 @@
         if (_lightboxAlbum is not null && _lightboxIndex < _lightboxAlbum.ImageUrls.Length - 1)
             _lightboxIndex++;
     }
+
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Lang.OnChanged -= OnLanguageChanged;
 }

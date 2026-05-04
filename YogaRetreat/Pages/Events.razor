@@ -1,5 +1,6 @@
 @page "/events"
 @inject LanguageService Lang
+@implements IDisposable
 
 <PageTitle>@Lang.T("Kalendar događaja", "Events")</PageTitle>
 
@@ -94,6 +95,10 @@
 </div>
 
 @code {
+    protected override void OnInitialized() => Lang.OnChanged += OnLanguageChanged;
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Lang.OnChanged -= OnLanguageChanged;
+
     private record ScheduleItem(string TitleSr, string TitleEn, string BodySr, string BodyEn, Color Color);
 
     private record LocalEvent(

@@ -2,6 +2,7 @@
 @page "/register/{Slug}"
 @inject IContentfulService ContentfulService
 @inject LanguageService Lang
+@implements IDisposable
 
 <PageTitle>@Lang.T("Prijava", "Register") — @(_event?.Title ?? Lang.T("Yoga Retreat", "Yoga Retreat"))</PageTitle>
 
@@ -88,6 +89,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Lang.OnChanged += OnLanguageChanged;
         try
         {
             if (!string.IsNullOrEmpty(Slug))
@@ -112,4 +114,7 @@
             _isLoading = false;
         }
     }
+
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Lang.OnChanged -= OnLanguageChanged;
 }

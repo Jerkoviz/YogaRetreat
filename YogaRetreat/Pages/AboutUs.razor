@@ -1,5 +1,6 @@
 @page "/about-us"
 @inject LanguageService Lang
+@implements IDisposable
 
 <PageTitle>@Lang.T("O nama", "About Us") – Šumozov</PageTitle>
 
@@ -46,6 +47,10 @@
 </MudContainer>
 
 @code {
+    protected override void OnInitialized() => Lang.OnChanged += OnLanguageChanged;
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => Lang.OnChanged -= OnLanguageChanged;
+
     private record TeamMember(string Name, string? RoleSr, string? RoleEn, string BioSr, string BioEn, string? ImageUrl);
 
     private readonly TeamMember[] _team =
