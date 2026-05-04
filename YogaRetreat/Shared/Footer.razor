@@ -40,7 +40,11 @@
                 </MudText>
                 <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
                     <MudIconButton Icon="@Icons.Custom.Brands.Instagram"
-                                   Href="@(SiteConfig?.InstagramUrl ?? "https://www.instagram.com/ravnotezim_yogastudio?igsh=amVreG1vaHB6Nmhx")"
+                                   Href="https://www.instagram.com/ravnotezim_yogastudio?igsh=amVreG1vaHB6Nmhx"
+                                   Target="_blank"
+                                   Style="color:#B0ADA8;" />
+                    <MudIconButton Icon="@Icons.Custom.Brands.Instagram"
+                                   Href="@(SiteConfig?.InstagramUrl ?? "https://www.instagram.com/shumozov")"
                                    Target="_blank"
                                    Style="color:#B0ADA8;" />
                     @if (!string.IsNullOrEmpty(SiteConfig?.FacebookUrl))

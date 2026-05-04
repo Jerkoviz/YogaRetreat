@@ -3,7 +3,7 @@
 @inject LanguageService Lang
 @implements IDisposable
 
-<PageTitle>@(_siteConfig?.SiteName ?? "Šumozov")</PageTitle>
+<PageTitle>@("Šumozov")</PageTitle>
 
 @if (_isLoading)
 {
@@ -36,7 +36,7 @@ else
                 <img src="images/place/logo.png" alt="Šumozov" style="width:min(380px, 80vw); display:block;" />
                 <div style="position:absolute; bottom:0; left:0; right:0; padding:1rem 1.5rem 1.25rem; background:linear-gradient(transparent, rgba(245,240,232,0.85));">
                     <MudText Typo="Typo.h6" Style="color:#3D5432; font-weight:400; letter-spacing:0.04em;">
-                        @(_siteConfig?.Tagline ?? Lang.T("Udahni miris borova. Izdahni stres.", "Breathe in the pine forest. Breathe out the stress."))
+                        @(Lang.T("Udahni miris borova. Izdahni stres.", "Breathe in the pine forest. Breathe out the stress."))
                     </MudText>
                 </div>
             </div>

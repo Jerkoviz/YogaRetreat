@@ -1,5 +1,4 @@
 using Blazored.LocalStorage;
-using Contentful.AspNetCore;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
@@ -21,11 +20,8 @@ builder.Services.AddBlazoredLocalStorage();
 // Cache service
 builder.Services.AddScoped<ICacheService, CacheService>();
 
-// Contentful
-builder.Services.AddContentful(builder.Configuration);
-
-// Contentful service
-builder.Services.AddScoped<IContentfulService, ContentfulService>();
+// Static data (swap for ContentfulService + AddContentful when CMS is needed)
+builder.Services.AddScoped<IContentfulService, StaticDataService>();
 
 // Localization
 builder.Services.AddScoped<LanguageService>();
